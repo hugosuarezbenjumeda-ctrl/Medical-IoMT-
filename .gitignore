@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+.vscode/
+
+# Home/user sensitive
+.bash_history
+.ssh/
+.wget-hsts
+
+# Tooling caches and local state
+.cache/
+.local/
+.venvs/
+.vscode-server/
+.codex/
+.copilot/
+.dotnet/
+.kaggle/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Large project content (add later if needed)
+data/
+ignore this foler/

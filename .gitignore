@@ -22,5 +22,8 @@ __pycache__/
 *.pyc
 
 # Large project content (add later if needed)
-data/
 ignore this foler/
+
+# Keep folder visible on GitHub, but skip oversized dataset binaries
+data/**
+!data/README.md

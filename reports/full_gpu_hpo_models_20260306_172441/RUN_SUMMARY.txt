@@ -1,0 +1,6 @@
+Iterative GPU HPO training completed (individual model per protocol).
+Output directory: /home/capstone15/reports/full_gpu_hpo_models_20260306_172441
+Best model by selection score: weighted_ensemble__protocol_routed
+Rows train=5943791 val=1726101 test=1650153
+Protocols=bluetooth,mqtt,wifi
+Features=45

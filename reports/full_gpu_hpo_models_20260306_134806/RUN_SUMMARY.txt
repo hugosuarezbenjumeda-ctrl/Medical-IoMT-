@@ -1,0 +1,5 @@
+Iterative GPU HPO training completed.
+Output directory: /home/capstone15/reports/full_gpu_hpo_models_20260306_134806
+Best model by selection score: complex_mlp_tuned
+Rows train=6136270 val=1533622 test=1650153
+Features=45

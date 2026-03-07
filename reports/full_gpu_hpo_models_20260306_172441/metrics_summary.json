@@ -1,0 +1,1173 @@
+{
+  "generated_at": "2026-03-06T17:39:45.463406",
+  "seed": 42,
+  "target_fpr": 0.01,
+  "feature_columns": [
+    "Header_Length",
+    "Protocol Type",
+    "Duration",
+    "Rate",
+    "Srate",
+    "Drate",
+    "fin_flag_number",
+    "syn_flag_number",
+    "rst_flag_number",
+    "psh_flag_number",
+    "ack_flag_number",
+    "ece_flag_number",
+    "cwr_flag_number",
+    "ack_count",
+    "syn_count",
+    "fin_count",
+    "rst_count",
+    "HTTP",
+    "HTTPS",
+    "DNS",
+    "Telnet",
+    "SMTP",
+    "SSH",
+    "IRC",
+    "TCP",
+    "UDP",
+    "DHCP",
+    "ARP",
+    "ICMP",
+    "IGMP",
+    "IPv",
+    "LLC",
+    "Tot sum",
+    "Min",
+    "Max",
+    "AVG",
+    "Std",
+    "Tot size",
+    "IAT",
+    "Number",
+    "Magnitue",
+    "Radius",
+    "Covariance",
+    "Variance",
+    "Weight"
+  ],
+  "protocol_slices": [
+    "bluetooth",
+    "mqtt",
+    "wifi"
+  ],
+  "dataset_sizes": {
+    "train": 5943791,
+    "val": 1726101,
+    "test": 1650153,
+    "train_attack_ratio": 0.9096810436302353,
+    "val_attack_ratio": 0.9622750928248115,
+    "test_attack_ratio": 0.9706645383791684,
+    "per_protocol": {
+      "wifi": {
+        "train": 5381938,
+        "val": 1704217,
+        "test": 1554597,
+        "train_attack_ratio": 0.9372417519488333,
+        "val_attack_ratio": 0.9746317517076757,
+        "test_attack_ratio": 0.9731525276325633
+      }
+    }
+  },
+  "hpo": {
+    "coarse_trials_boost": 12,
+    "refine_trials_boost": 6,
+    "coarse_trials_mlp": 8,
+    "refine_trials_mlp": 4,
+    "ensemble_iters": 700,
+    "best_params_by_protocol": {
+      "wifi": {
+        "xgboost": {
+          "n_estimators": 1442,
+          "max_depth": 3,
+          "learning_rate": 0.023461348691795815,
+          "subsample": 0.7344536093744406,
+          "colsample_bytree": 0.6775016601757066,
+          "min_child_weight": 3.2748258933153043,
+          "reg_lambda": 0.0010069130660756251,
+          "reg_alpha": 0.4718982101846842,
+          "gamma": 2.9145995696312266,
+          "max_bin": 256
+        },
+        "catboost": {
+          "iterations": 1671,
+          "depth": 11,
+          "learning_rate": 0.043998481421715946,
+          "l2_leaf_reg": 0.7325418418664179,
+          "random_strength": 0.5394487766095957,
+          "bagging_temperature": 0.35564678180620063,
+          "border_count": 254
+        },
+        "lightgbm": {
+          "n_estimators": 1390,
+          "num_leaves": 203,
+          "max_depth": 8,
+          "learning_rate": 0.042871553127088145,
+          "min_child_samples": 259,
+          "subsample": 0.9789925320856248,
+          "subsample_freq": 1,
+          "colsample_bytree": 0.9400250873818755,
+          "reg_lambda": 0.0025150431526058544,
+          "reg_alpha": 0.991130762899384,
+          "min_split_gain": 0.17017232436438934
+        },
+        "complex_mlp": {
+          "width": 384,
+          "depth": 4,
+          "dropout": 0.10945371600159572,
+          "lr": 0.0020004524735246706,
+          "weight_decay": 0.00043831852256791986,
+          "batch_size": 32768
+        }
+      }
+    },
+    "best_objectives_by_protocol": {
+      "wifi": {
+        "xgboost_best_objective": 1.0435202152830312,
+        "catboost_best_objective": 1.0181340936394885,
+        "lightgbm_best_objective": 1.0448463312409149,
+        "complex_mlp_best_objective": 1.0400128142234732
+      }
+    }
+  },
+  "skipped_protocols": [
+    {
+      "protocol_hint": "bluetooth",
+      "reason": "single_class_train_or_val",
+      "train_rows": 101351,
+      "val_rows": 21884,
+      "test_rows": 31841,
+      "train_attack_ratio": 0.9850815482827007,
+      "val_attack_ratio": 0.0
+    },
+    {
+      "protocol_hint": "mqtt",
+      "reason": "insufficient_rows",
+      "train_rows": 460502,
+      "val_rows": 0,
+      "test_rows": 63715
+    }
+  ],
+  "best_model_by_selection_score": "weighted_ensemble__protocol_routed",
+  "results": {
+    "global_protocol_routed": {
+      "catboost_tuned__protocol_routed": {
+        "coverage_rows": 1554597,
+        "coverage_ratio": 0.9420926423186213,
+        "global_test": {
+          "tp": 1510703,
+          "tn": 41691,
+          "fp": 46,
+          "fn": 2157,
+          "precision": 0.9999695515270902,
+          "recall": 0.9985742236558571,
+          "f1": 0.9992714005018506,
+          "fpr": 0.0011021395883748233,
+          "roc_auc": 0.9998470441128879,
+          "pr_auc": 0.9999946857086283,
+          "model": "catboost_tuned__protocol_routed",
+          "selection_score": 0.9992714005018506,
+          "threshold": NaN,
+          "val_f1_at_selected_threshold": NaN,
+          "val_precision_at_selected_threshold": NaN,
+          "val_recall_at_selected_threshold": NaN,
+          "val_fpr_at_selected_threshold": NaN,
+          "val_threshold_feasible": 0
+        },
+        "protocol_slices": [
+          {
+            "tp": 1510703,
+            "tn": 41691,
+            "fp": 46,
+            "fn": 2157,
+            "precision": 0.9999695515270902,
+            "recall": 0.9985742236558571,
+            "f1": 0.9992714005018506,
+            "fpr": 0.0011021395883748233,
+            "roc_auc": 0.9998470441128879,
+            "pr_auc": 0.9999946857086283,
+            "model": "catboost_tuned__protocol_routed",
+            "protocol_hint": "wifi",
+            "n": 1554597
+          }
+        ],
+        "attack_family_slices": [
+          {
+            "tp": 0,
+            "tn": 41691,
+            "fp": 46,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "fpr": 0.0011021395883748233,
+            "roc_auc": NaN,
+            "pr_auc": 0.0,
+            "model": "catboost_tuned__protocol_routed",
+            "attack_family": "Benign",
+            "n": 41737
+          },
+          {
+            "tp": 1066762,
+            "tn": 0,
+            "fp": 0,
+            "fn": 2,
+            "precision": 1.0,
+            "recall": 0.9999981251710781,
+            "f1": 0.9999990625846603,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "catboost_tuned__protocol_routed",
+            "attack_family": "DDoS",
+            "n": 1066764
+          },
+          {
+            "tp": 416676,
+            "tn": 0,
+            "fp": 0,
+            "fn": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "catboost_tuned__protocol_routed",
+            "attack_family": "DoS",
+            "n": 416676
+          },
+          {
+            "tp": 26393,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1283,
+            "precision": 1.0,
+            "recall": 0.9536421448186154,
+            "f1": 0.9762710610516192,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 0.9999999999999999,
+            "model": "catboost_tuned__protocol_routed",
+            "attack_family": "Recon",
+            "n": 27676
+          },
+          {
+            "tp": 872,
+            "tn": 0,
+            "fp": 0,
+            "fn": 872,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "catboost_tuned__protocol_routed",
+            "attack_family": "Spoofing",
+            "n": 1744
+          }
+        ],
+        "per_protocol_thresholds": {
+          "wifi": {
+            "threshold": 0.3152843432380144,
+            "val_f1": 0.9975277483318412,
+            "val_fpr": 0.002405569819350959,
+            "val_threshold_feasible": 1
+          }
+        }
+      },
+      "complex_mlp_tuned__protocol_routed": {
+        "coverage_rows": 1554597,
+        "coverage_ratio": 0.9420926423186213,
+        "global_test": {
+          "tp": 1508833,
+          "tn": 41705,
+          "fp": 32,
+          "fn": 4027,
+          "precision": 0.9999787920059118,
+          "recall": 0.997338154224449,
+          "f1": 0.9986567275314597,
+          "fpr": 0.0007667058006085727,
+          "roc_auc": 0.9995061531064374,
+          "pr_auc": 0.9999865184901299,
+          "model": "complex_mlp_tuned__protocol_routed",
+          "selection_score": 0.9986567275314597,
+          "threshold": NaN,
+          "val_f1_at_selected_threshold": NaN,
+          "val_precision_at_selected_threshold": NaN,
+          "val_recall_at_selected_threshold": NaN,
+          "val_fpr_at_selected_threshold": NaN,
+          "val_threshold_feasible": 0
+        },
+        "protocol_slices": [
+          {
+            "tp": 1508833,
+            "tn": 41705,
+            "fp": 32,
+            "fn": 4027,
+            "precision": 0.9999787920059118,
+            "recall": 0.997338154224449,
+            "f1": 0.9986567275314597,
+            "fpr": 0.0007667058006085727,
+            "roc_auc": 0.9995061531064374,
+            "pr_auc": 0.9999865184901299,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "protocol_hint": "wifi",
+            "n": 1554597
+          }
+        ],
+        "attack_family_slices": [
+          {
+            "tp": 0,
+            "tn": 41705,
+            "fp": 32,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "fpr": 0.0007667058006085727,
+            "roc_auc": NaN,
+            "pr_auc": 0.0,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "attack_family": "Benign",
+            "n": 41737
+          },
+          {
+            "tp": 1066757,
+            "tn": 0,
+            "fp": 0,
+            "fn": 7,
+            "precision": 1.0,
+            "recall": 0.9999934380987735,
+            "f1": 0.9999967190386221,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "attack_family": "DDoS",
+            "n": 1066764
+          },
+          {
+            "tp": 416675,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1,
+            "precision": 1.0,
+            "recall": 0.9999976000537588,
+            "f1": 0.9999988000254395,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "attack_family": "DoS",
+            "n": 416676
+          },
+          {
+            "tp": 25398,
+            "tn": 0,
+            "fp": 0,
+            "fn": 2278,
+            "precision": 1.0,
+            "recall": 0.9176904176904177,
+            "f1": 0.957078795643818,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "attack_family": "Recon",
+            "n": 27676
+          },
+          {
+            "tp": 3,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1741,
+            "precision": 1.0,
+            "recall": 0.0017201834862385322,
+            "f1": 0.0034344590726960505,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "complex_mlp_tuned__protocol_routed",
+            "attack_family": "Spoofing",
+            "n": 1744
+          }
+        ],
+        "per_protocol_thresholds": {
+          "wifi": {
+            "threshold": 0.10757910460233688,
+            "val_f1": 0.9948871861976114,
+            "val_fpr": 0.001804177364513219,
+            "val_threshold_feasible": 1
+          }
+        }
+      },
+      "weighted_ensemble__protocol_routed": {
+        "coverage_rows": 1554597,
+        "coverage_ratio": 0.9420926423186213,
+        "global_test": {
+          "tp": 1510731,
+          "tn": 41728,
+          "fp": 9,
+          "fn": 2129,
+          "precision": 0.9999940426545931,
+          "recall": 0.9985927316473434,
+          "f1": 0.9992928958856991,
+          "fpr": 0.00021563600642116108,
+          "roc_auc": 0.9998947446316528,
+          "pr_auc": 0.9999971094033189,
+          "model": "weighted_ensemble__protocol_routed",
+          "selection_score": 0.9992928958856991,
+          "threshold": NaN,
+          "val_f1_at_selected_threshold": NaN,
+          "val_precision_at_selected_threshold": NaN,
+          "val_recall_at_selected_threshold": NaN,
+          "val_fpr_at_selected_threshold": NaN,
+          "val_threshold_feasible": 0
+        },
+        "protocol_slices": [
+          {
+            "tp": 1510731,
+            "tn": 41728,
+            "fp": 9,
+            "fn": 2129,
+            "precision": 0.9999940426545931,
+            "recall": 0.9985927316473434,
+            "f1": 0.9992928958856991,
+            "fpr": 0.00021563600642116108,
+            "roc_auc": 0.9998947446316528,
+            "pr_auc": 0.9999971094033189,
+            "model": "weighted_ensemble__protocol_routed",
+            "protocol_hint": "wifi",
+            "n": 1554597
+          }
+        ],
+        "attack_family_slices": [
+          {
+            "tp": 0,
+            "tn": 41728,
+            "fp": 9,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "fpr": 0.00021563600642116108,
+            "roc_auc": NaN,
+            "pr_auc": 0.0,
+            "model": "weighted_ensemble__protocol_routed",
+            "attack_family": "Benign",
+            "n": 41737
+          },
+          {
+            "tp": 1066760,
+            "tn": 0,
+            "fp": 0,
+            "fn": 4,
+            "precision": 1.0,
+            "recall": 0.9999962503421562,
+            "f1": 0.9999981251675631,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "weighted_ensemble__protocol_routed",
+            "attack_family": "DDoS",
+            "n": 1066764
+          },
+          {
+            "tp": 416675,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1,
+            "precision": 1.0,
+            "recall": 0.9999976000537588,
+            "f1": 0.9999988000254395,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "weighted_ensemble__protocol_routed",
+            "attack_family": "DoS",
+            "n": 416676
+          },
+          {
+            "tp": 26425,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1251,
+            "precision": 1.0,
+            "recall": 0.9547983812689695,
+            "f1": 0.9768765826879355,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "weighted_ensemble__protocol_routed",
+            "attack_family": "Recon",
+            "n": 27676
+          },
+          {
+            "tp": 871,
+            "tn": 0,
+            "fp": 0,
+            "fn": 873,
+            "precision": 1.0,
+            "recall": 0.4994266055045872,
+            "f1": 0.6661567877629063,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "weighted_ensemble__protocol_routed",
+            "attack_family": "Spoofing",
+            "n": 1744
+          }
+        ],
+        "per_protocol_thresholds": {
+          "wifi": {
+            "threshold": 0.21216356754302979,
+            "val_f1": 0.9974474906763093,
+            "val_fpr": 0.0010640020354821548,
+            "val_threshold_feasible": 1
+          }
+        }
+      },
+      "xgboost_tuned__protocol_routed": {
+        "coverage_rows": 1554597,
+        "coverage_ratio": 0.9420926423186213,
+        "global_test": {
+          "tp": 1510535,
+          "tn": 41730,
+          "fp": 7,
+          "fn": 2325,
+          "precision": 0.9999953659017756,
+          "recall": 0.9984631757069392,
+          "f1": 0.999228683449968,
+          "fpr": 0.00016771689388312528,
+          "roc_auc": 0.9998595064523166,
+          "pr_auc": 0.9999961010855143,
+          "model": "xgboost_tuned__protocol_routed",
+          "selection_score": 0.999228683449968,
+          "threshold": NaN,
+          "val_f1_at_selected_threshold": NaN,
+          "val_precision_at_selected_threshold": NaN,
+          "val_recall_at_selected_threshold": NaN,
+          "val_fpr_at_selected_threshold": NaN,
+          "val_threshold_feasible": 0
+        },
+        "protocol_slices": [
+          {
+            "tp": 1510535,
+            "tn": 41730,
+            "fp": 7,
+            "fn": 2325,
+            "precision": 0.9999953659017756,
+            "recall": 0.9984631757069392,
+            "f1": 0.999228683449968,
+            "fpr": 0.00016771689388312528,
+            "roc_auc": 0.9998595064523166,
+            "pr_auc": 0.9999961010855143,
+            "model": "xgboost_tuned__protocol_routed",
+            "protocol_hint": "wifi",
+            "n": 1554597
+          }
+        ],
+        "attack_family_slices": [
+          {
+            "tp": 0,
+            "tn": 41730,
+            "fp": 7,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "fpr": 0.00016771689388312528,
+            "roc_auc": NaN,
+            "pr_auc": 0.0,
+            "model": "xgboost_tuned__protocol_routed",
+            "attack_family": "Benign",
+            "n": 41737
+          },
+          {
+            "tp": 1066755,
+            "tn": 0,
+            "fp": 0,
+            "fn": 9,
+            "precision": 1.0,
+            "recall": 0.9999915632698516,
+            "f1": 0.9999957816171311,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "xgboost_tuned__protocol_routed",
+            "attack_family": "DDoS",
+            "n": 1066764
+          },
+          {
+            "tp": 416673,
+            "tn": 0,
+            "fp": 0,
+            "fn": 3,
+            "precision": 1.0,
+            "recall": 0.9999928001612763,
+            "f1": 0.9999964000676788,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "xgboost_tuned__protocol_routed",
+            "attack_family": "DoS",
+            "n": 416676
+          },
+          {
+            "tp": 26236,
+            "tn": 0,
+            "fp": 0,
+            "fn": 1440,
+            "precision": 1.0,
+            "recall": 0.9479693597340656,
+            "f1": 0.9732898056091408,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "xgboost_tuned__protocol_routed",
+            "attack_family": "Recon",
+            "n": 27676
+          },
+          {
+            "tp": 871,
+            "tn": 0,
+            "fp": 0,
+            "fn": 873,
+            "precision": 1.0,
+            "recall": 0.4994266055045872,
+            "f1": 0.6661567877629063,
+            "fpr": 0.0,
+            "roc_auc": NaN,
+            "pr_auc": 1.0,
+            "model": "xgboost_tuned__protocol_routed",
+            "attack_family": "Spoofing",
+            "n": 1744
+          }
+        ],
+        "per_protocol_thresholds": {
+          "wifi": {
+            "threshold": 0.2261005938053131,
+            "val_f1": 0.9974438692395767,
+            "val_fpr": 0.0012027849096754794,
+            "val_threshold_feasible": 1
+          }
+        }
+      }
+    },
+    "per_protocol_models": {
+      "wifi": {
+        "xgboost_tuned__wifi": {
+          "protocol_test": {
+            "tp": 1510535,
+            "tn": 41730,
+            "fp": 7,
+            "fn": 2325,
+            "precision": 0.9999953659017756,
+            "recall": 0.9984631757069392,
+            "f1": 0.999228683449968,
+            "fpr": 0.00016771689388312528,
+            "roc_auc": 0.9998595064523166,
+            "pr_auc": 0.9999961010855143,
+            "model": "xgboost_tuned__wifi",
+            "protocol_hint": "wifi",
+            "selection_score": 0.999228683449968,
+            "threshold": 0.2261005938053131,
+            "val_f1_at_selected_threshold": 0.9974438692395767,
+            "val_precision_at_selected_threshold": 0.9999685347733112,
+            "val_recall_at_selected_threshold": 0.9949319198740024,
+            "val_fpr_at_selected_threshold": 0.0012027849096754794,
+            "val_threshold_feasible": 1
+          },
+          "protocol_slices": [
+            {
+              "tp": 1510535,
+              "tn": 41730,
+              "fp": 7,
+              "fn": 2325,
+              "precision": 0.9999953659017756,
+              "recall": 0.9984631757069392,
+              "f1": 0.999228683449968,
+              "fpr": 0.00016771689388312528,
+              "roc_auc": 0.9998595064523166,
+              "pr_auc": 0.9999961010855143,
+              "model": "xgboost_tuned__wifi",
+              "protocol_hint": "wifi",
+              "n": 1554597
+            }
+          ],
+          "attack_family_slices": [
+            {
+              "tp": 0,
+              "tn": 41730,
+              "fp": 7,
+              "fn": 0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "fpr": 0.00016771689388312528,
+              "roc_auc": NaN,
+              "pr_auc": 0.0,
+              "model": "xgboost_tuned__wifi",
+              "attack_family": "Benign",
+              "n": 41737
+            },
+            {
+              "tp": 1066755,
+              "tn": 0,
+              "fp": 0,
+              "fn": 9,
+              "precision": 1.0,
+              "recall": 0.9999915632698516,
+              "f1": 0.9999957816171311,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "xgboost_tuned__wifi",
+              "attack_family": "DDoS",
+              "n": 1066764
+            },
+            {
+              "tp": 416673,
+              "tn": 0,
+              "fp": 0,
+              "fn": 3,
+              "precision": 1.0,
+              "recall": 0.9999928001612763,
+              "f1": 0.9999964000676788,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "xgboost_tuned__wifi",
+              "attack_family": "DoS",
+              "n": 416676
+            },
+            {
+              "tp": 26236,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1440,
+              "precision": 1.0,
+              "recall": 0.9479693597340656,
+              "f1": 0.9732898056091408,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "xgboost_tuned__wifi",
+              "attack_family": "Recon",
+              "n": 27676
+            },
+            {
+              "tp": 871,
+              "tn": 0,
+              "fp": 0,
+              "fn": 873,
+              "precision": 1.0,
+              "recall": 0.4994266055045872,
+              "f1": 0.6661567877629063,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "xgboost_tuned__wifi",
+              "attack_family": "Spoofing",
+              "n": 1744
+            }
+          ],
+          "model_meta": {
+            "params": {
+              "n_estimators": 1442,
+              "max_depth": 3,
+              "learning_rate": 0.023461348691795815,
+              "subsample": 0.7344536093744406,
+              "colsample_bytree": 0.6775016601757066,
+              "min_child_weight": 3.2748258933153043,
+              "reg_lambda": 0.0010069130660756251,
+              "reg_alpha": 0.4718982101846842,
+              "gamma": 2.9145995696312266,
+              "max_bin": 256
+            }
+          }
+        },
+        "catboost_tuned__wifi": {
+          "protocol_test": {
+            "tp": 1510703,
+            "tn": 41691,
+            "fp": 46,
+            "fn": 2157,
+            "precision": 0.9999695515270902,
+            "recall": 0.9985742236558571,
+            "f1": 0.9992714005018506,
+            "fpr": 0.0011021395883748233,
+            "roc_auc": 0.9998470441128879,
+            "pr_auc": 0.9999946857086284,
+            "model": "catboost_tuned__wifi",
+            "protocol_hint": "wifi",
+            "selection_score": 0.9992714005018506,
+            "threshold": 0.3152843432380144,
+            "val_f1_at_selected_threshold": 0.9975277483318412,
+            "val_precision_at_selected_threshold": 0.9999370840514725,
+            "val_recall_at_selected_threshold": 0.9951299952317422,
+            "val_fpr_at_selected_threshold": 0.002405569819350959,
+            "val_threshold_feasible": 1
+          },
+          "protocol_slices": [
+            {
+              "tp": 1510703,
+              "tn": 41691,
+              "fp": 46,
+              "fn": 2157,
+              "precision": 0.9999695515270902,
+              "recall": 0.9985742236558571,
+              "f1": 0.9992714005018506,
+              "fpr": 0.0011021395883748233,
+              "roc_auc": 0.9998470441128879,
+              "pr_auc": 0.9999946857086284,
+              "model": "catboost_tuned__wifi",
+              "protocol_hint": "wifi",
+              "n": 1554597
+            }
+          ],
+          "attack_family_slices": [
+            {
+              "tp": 0,
+              "tn": 41691,
+              "fp": 46,
+              "fn": 0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "fpr": 0.0011021395883748233,
+              "roc_auc": NaN,
+              "pr_auc": 0.0,
+              "model": "catboost_tuned__wifi",
+              "attack_family": "Benign",
+              "n": 41737
+            },
+            {
+              "tp": 1066762,
+              "tn": 0,
+              "fp": 0,
+              "fn": 2,
+              "precision": 1.0,
+              "recall": 0.9999981251710781,
+              "f1": 0.9999990625846603,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "catboost_tuned__wifi",
+              "attack_family": "DDoS",
+              "n": 1066764
+            },
+            {
+              "tp": 416676,
+              "tn": 0,
+              "fp": 0,
+              "fn": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "catboost_tuned__wifi",
+              "attack_family": "DoS",
+              "n": 416676
+            },
+            {
+              "tp": 26393,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1283,
+              "precision": 1.0,
+              "recall": 0.9536421448186154,
+              "f1": 0.9762710610516192,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 0.9999999999999999,
+              "model": "catboost_tuned__wifi",
+              "attack_family": "Recon",
+              "n": 27676
+            },
+            {
+              "tp": 872,
+              "tn": 0,
+              "fp": 0,
+              "fn": 872,
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.6666666666666666,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "catboost_tuned__wifi",
+              "attack_family": "Spoofing",
+              "n": 1744
+            }
+          ],
+          "model_meta": {
+            "params": {
+              "iterations": 1671,
+              "depth": 11,
+              "learning_rate": 0.043998481421715946,
+              "l2_leaf_reg": 0.7325418418664179,
+              "random_strength": 0.5394487766095957,
+              "bagging_temperature": 0.35564678180620063,
+              "border_count": 254
+            }
+          }
+        },
+        "complex_mlp_tuned__wifi": {
+          "protocol_test": {
+            "tp": 1508833,
+            "tn": 41705,
+            "fp": 32,
+            "fn": 4027,
+            "precision": 0.9999787920059118,
+            "recall": 0.997338154224449,
+            "f1": 0.9986567275314597,
+            "fpr": 0.0007667058006085727,
+            "roc_auc": 0.9995061531064374,
+            "pr_auc": 0.9999865184901299,
+            "model": "complex_mlp_tuned__wifi",
+            "protocol_hint": "wifi",
+            "selection_score": 0.9986567275314597,
+            "threshold": 0.10757910460233688,
+            "val_f1_at_selected_threshold": 0.9948871861976114,
+            "val_precision_at_selected_threshold": 0.9999525616986804,
+            "val_recall_at_selected_threshold": 0.9898728705393911,
+            "val_fpr_at_selected_threshold": 0.001804177364513219,
+            "val_threshold_feasible": 1
+          },
+          "protocol_slices": [
+            {
+              "tp": 1508833,
+              "tn": 41705,
+              "fp": 32,
+              "fn": 4027,
+              "precision": 0.9999787920059118,
+              "recall": 0.997338154224449,
+              "f1": 0.9986567275314597,
+              "fpr": 0.0007667058006085727,
+              "roc_auc": 0.9995061531064374,
+              "pr_auc": 0.9999865184901299,
+              "model": "complex_mlp_tuned__wifi",
+              "protocol_hint": "wifi",
+              "n": 1554597
+            }
+          ],
+          "attack_family_slices": [
+            {
+              "tp": 0,
+              "tn": 41705,
+              "fp": 32,
+              "fn": 0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "fpr": 0.0007667058006085727,
+              "roc_auc": NaN,
+              "pr_auc": 0.0,
+              "model": "complex_mlp_tuned__wifi",
+              "attack_family": "Benign",
+              "n": 41737
+            },
+            {
+              "tp": 1066757,
+              "tn": 0,
+              "fp": 0,
+              "fn": 7,
+              "precision": 1.0,
+              "recall": 0.9999934380987735,
+              "f1": 0.9999967190386221,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "complex_mlp_tuned__wifi",
+              "attack_family": "DDoS",
+              "n": 1066764
+            },
+            {
+              "tp": 416675,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1,
+              "precision": 1.0,
+              "recall": 0.9999976000537588,
+              "f1": 0.9999988000254395,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "complex_mlp_tuned__wifi",
+              "attack_family": "DoS",
+              "n": 416676
+            },
+            {
+              "tp": 25398,
+              "tn": 0,
+              "fp": 0,
+              "fn": 2278,
+              "precision": 1.0,
+              "recall": 0.9176904176904177,
+              "f1": 0.957078795643818,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "complex_mlp_tuned__wifi",
+              "attack_family": "Recon",
+              "n": 27676
+            },
+            {
+              "tp": 3,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1741,
+              "precision": 1.0,
+              "recall": 0.0017201834862385322,
+              "f1": 0.0034344590726960505,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "complex_mlp_tuned__wifi",
+              "attack_family": "Spoofing",
+              "n": 1744
+            }
+          ],
+          "model_meta": {
+            "params": {
+              "width": 384,
+              "depth": 4,
+              "dropout": 0.10945371600159572,
+              "lr": 0.0020004524735246706,
+              "weight_decay": 0.00043831852256791986,
+              "batch_size": 32768
+            },
+            "best_epoch": 2,
+            "best_objective": 1.026839690830286
+          }
+        },
+        "weighted_ensemble__wifi": {
+          "protocol_test": {
+            "tp": 1510731,
+            "tn": 41728,
+            "fp": 9,
+            "fn": 2129,
+            "precision": 0.9999940426545931,
+            "recall": 0.9985927316473434,
+            "f1": 0.9992928958856991,
+            "fpr": 0.00021563600642116108,
+            "roc_auc": 0.9998947446316528,
+            "pr_auc": 0.9999971094033189,
+            "model": "weighted_ensemble__wifi",
+            "protocol_hint": "wifi",
+            "selection_score": 0.9992928958856991,
+            "threshold": 0.21216356754302979,
+            "val_f1_at_selected_threshold": 0.9974474906763093,
+            "val_precision_at_selected_threshold": 0.9999721653763907,
+            "val_recall_at_selected_threshold": 0.994935532190557,
+            "val_fpr_at_selected_threshold": 0.0010640020354821548,
+            "val_threshold_feasible": 1
+          },
+          "protocol_slices": [
+            {
+              "tp": 1510731,
+              "tn": 41728,
+              "fp": 9,
+              "fn": 2129,
+              "precision": 0.9999940426545931,
+              "recall": 0.9985927316473434,
+              "f1": 0.9992928958856991,
+              "fpr": 0.00021563600642116108,
+              "roc_auc": 0.9998947446316528,
+              "pr_auc": 0.9999971094033189,
+              "model": "weighted_ensemble__wifi",
+              "protocol_hint": "wifi",
+              "n": 1554597
+            }
+          ],
+          "attack_family_slices": [
+            {
+              "tp": 0,
+              "tn": 41728,
+              "fp": 9,
+              "fn": 0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "fpr": 0.00021563600642116108,
+              "roc_auc": NaN,
+              "pr_auc": 0.0,
+              "model": "weighted_ensemble__wifi",
+              "attack_family": "Benign",
+              "n": 41737
+            },
+            {
+              "tp": 1066760,
+              "tn": 0,
+              "fp": 0,
+              "fn": 4,
+              "precision": 1.0,
+              "recall": 0.9999962503421562,
+              "f1": 0.9999981251675631,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "weighted_ensemble__wifi",
+              "attack_family": "DDoS",
+              "n": 1066764
+            },
+            {
+              "tp": 416675,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1,
+              "precision": 1.0,
+              "recall": 0.9999976000537588,
+              "f1": 0.9999988000254395,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "weighted_ensemble__wifi",
+              "attack_family": "DoS",
+              "n": 416676
+            },
+            {
+              "tp": 26425,
+              "tn": 0,
+              "fp": 0,
+              "fn": 1251,
+              "precision": 1.0,
+              "recall": 0.9547983812689695,
+              "f1": 0.9768765826879355,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "weighted_ensemble__wifi",
+              "attack_family": "Recon",
+              "n": 27676
+            },
+            {
+              "tp": 871,
+              "tn": 0,
+              "fp": 0,
+              "fn": 873,
+              "precision": 1.0,
+              "recall": 0.4994266055045872,
+              "f1": 0.6661567877629063,
+              "fpr": 0.0,
+              "roc_auc": NaN,
+              "pr_auc": 1.0,
+              "model": "weighted_ensemble__wifi",
+              "attack_family": "Spoofing",
+              "n": 1744
+            }
+          ],
+          "model_meta": {}
+        }
+      }
+    }
+  }
+}

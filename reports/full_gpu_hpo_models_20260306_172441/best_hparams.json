@@ -1,0 +1,46 @@
+{
+  "wifi": {
+    "xgboost": {
+      "n_estimators": 1442,
+      "max_depth": 3,
+      "learning_rate": 0.023461348691795815,
+      "subsample": 0.7344536093744406,
+      "colsample_bytree": 0.6775016601757066,
+      "min_child_weight": 3.2748258933153043,
+      "reg_lambda": 0.0010069130660756251,
+      "reg_alpha": 0.4718982101846842,
+      "gamma": 2.9145995696312266,
+      "max_bin": 256
+    },
+    "catboost": {
+      "iterations": 1671,
+      "depth": 11,
+      "learning_rate": 0.043998481421715946,
+      "l2_leaf_reg": 0.7325418418664179,
+      "random_strength": 0.5394487766095957,
+      "bagging_temperature": 0.35564678180620063,
+      "border_count": 254
+    },
+    "lightgbm": {
+      "n_estimators": 1390,
+      "num_leaves": 203,
+      "max_depth": 8,
+      "learning_rate": 0.042871553127088145,
+      "min_child_samples": 259,
+      "subsample": 0.9789925320856248,
+      "subsample_freq": 1,
+      "colsample_bytree": 0.9400250873818755,
+      "reg_lambda": 0.0025150431526058544,
+      "reg_alpha": 0.991130762899384,
+      "min_split_gain": 0.17017232436438934
+    },
+    "complex_mlp": {
+      "width": 384,
+      "depth": 4,
+      "dropout": 0.10945371600159572,
+      "lr": 0.0020004524735246706,
+      "weight_decay": 0.00043831852256791986,
+      "batch_size": 32768
+    }
+  }
+}

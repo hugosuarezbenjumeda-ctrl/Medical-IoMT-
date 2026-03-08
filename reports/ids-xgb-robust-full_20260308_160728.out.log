@@ -1,0 +1,5 @@
+[PROGRESS +     0.2s] run_dir=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\reports\full_gpu_hpo_models_20260306_195851
+[PROGRESS +     0.2s] output_dir=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\reports\full_gpu_hpo_models_20260306_195851\xgb_robustness_full_20260308_160728
+[PROGRESS +     0.2s] protocols=['bluetooth', 'mqtt', 'wifi']
+[PROGRESS +     0.2s] attack_methods=['surrogate_fgsm', 'surrogate_pgd', 'heuristic_shap']
+[PROGRESS +     0.2s] epsilons=[0.0, 0.01, 0.02, 0.05, 0.1]

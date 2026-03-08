@@ -1,0 +1,207 @@
+{
+  "generated_at": "2026-03-08T17:10:16.011674",
+  "run_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851",
+  "output_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det",
+  "files": {
+    "robustness_metrics_global_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\robustness_metrics_global.csv",
+    "robustness_metrics_protocol_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\robustness_metrics_protocol.csv",
+    "robustness_metrics_by_epsilon_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\robustness_metrics_by_epsilon.json",
+    "perturbation_stats_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\perturbation_stats.csv",
+    "constraints_summary_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\constraints_summary.csv",
+    "attack_config_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\attack_config.json",
+    "robustness_query_metrics_global_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\robustness_query_metrics_global.csv",
+    "robustness_query_metrics_protocol_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\robustness_query_metrics_protocol.csv",
+    "realism_profile_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\realism_profile.json",
+    "query_trace_summary_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_realistic_smoke_det\\query_trace_summary.json"
+  },
+  "feature_count": 45,
+  "protocols": [
+    "bluetooth",
+    "mqtt",
+    "wifi"
+  ],
+  "train_sampling": {
+    "counts_available": {
+      "bluetooth": 123235,
+      "wifi": 7086155,
+      "mqtt": 460502
+    },
+    "counts_sampled": {
+      "bluetooth": 3000,
+      "wifi": 3000,
+      "mqtt": 3000
+    },
+    "target_per_protocol": 3000,
+    "rows_sampled_total": 9000
+  },
+  "eval_sampling": {
+    "counts_available": {
+      "bluetooth::0": 6671,
+      "bluetooth::1": 25170,
+      "mqtt::1": 63715,
+      "wifi::0": 41737,
+      "wifi::1": 1512860
+    },
+    "counts_sampled": {
+      "bluetooth::0": 500,
+      "bluetooth::1": 500,
+      "mqtt::1": 500,
+      "wifi::0": 500,
+      "wifi::1": 500
+    },
+    "sample_attack_per_protocol": 500,
+    "sample_benign_per_protocol": 500,
+    "rows_sampled_total": 2500
+  },
+  "surrogate_meta": {
+    "bluetooth": {
+      "n_rows": 3000,
+      "n_pos": 2405,
+      "n_neg": 595,
+      "single_class": 0
+    },
+    "mqtt": {
+      "n_rows": 3000,
+      "n_pos": 1698,
+      "n_neg": 1302,
+      "single_class": 0
+    },
+    "wifi": {
+      "n_rows": 3000,
+      "n_pos": 2841,
+      "n_neg": 159,
+      "single_class": 0
+    }
+  },
+  "realistic_eval_sampling": {
+    "counts_available": {
+      "bluetooth::0": 6671,
+      "bluetooth::1": 25170,
+      "mqtt::1": 63715,
+      "wifi::0": 41737,
+      "wifi::1": 1512860
+    },
+    "counts_sampled": {
+      "bluetooth::0": 200,
+      "bluetooth::1": 200,
+      "mqtt::1": 200,
+      "wifi::0": 200,
+      "wifi::1": 200
+    },
+    "sample_attack_per_protocol": 200,
+    "sample_benign_per_protocol": 200,
+    "rows_sampled_total": 1000
+  },
+  "baseline_global": {
+    "tp": 1492,
+    "tn": 999,
+    "fp": 1,
+    "fn": 8,
+    "precision": 0.999330207635633,
+    "recall": 0.9946666666666667,
+    "f1": 0.9969929836284664,
+    "fpr": 0.001,
+    "n": 2500,
+    "n_benign": 1000,
+    "n_attack": 1500
+  },
+  "baseline_by_protocol": {
+    "bluetooth": {
+      "tp": 494,
+      "tn": 500,
+      "fp": 0,
+      "fn": 6,
+      "precision": 1.0,
+      "recall": 0.988,
+      "f1": 0.993963782696177,
+      "fpr": 0.0,
+      "n": 1000,
+      "n_benign": 500,
+      "n_attack": 500
+    },
+    "mqtt": {
+      "tp": 498,
+      "tn": 0,
+      "fp": 0,
+      "fn": 2,
+      "precision": 1.0,
+      "recall": 0.996,
+      "f1": 0.9979959919839679,
+      "fpr": 0.0,
+      "n": 500,
+      "n_benign": 0,
+      "n_attack": 500
+    },
+    "wifi": {
+      "tp": 500,
+      "tn": 499,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.998003992015968,
+      "recall": 1.0,
+      "f1": 0.9990009990009989,
+      "fpr": 0.002,
+      "n": 1000,
+      "n_benign": 500,
+      "n_attack": 500
+    }
+  },
+  "realistic_query_rows_global": 5,
+  "realistic_query_rows_protocol": 15,
+  "shap_top_features_by_protocol": {
+    "bluetooth": {
+      "features": [
+        "Tot sum",
+        "Tot size",
+        "Max",
+        "Number",
+        "Header_Length"
+      ],
+      "mean_contrib": {
+        "Tot sum": 4.246687412261963,
+        "Tot size": 1.0815942287445068,
+        "Max": 0.6768550872802734,
+        "Number": 0.26688238978385925,
+        "Header_Length": 0.20355862379074097
+      }
+    },
+    "mqtt": {
+      "features": [
+        "Rate",
+        "syn_count",
+        "ack_count",
+        "IAT",
+        "rst_count"
+      ],
+      "mean_contrib": {
+        "Rate": 3.9747395515441895,
+        "syn_count": 2.1346518993377686,
+        "ack_count": 1.3392938375473022,
+        "IAT": 1.1285065412521362,
+        "rst_count": 1.0204331874847412
+      }
+    },
+    "wifi": {
+      "features": [
+        "IAT",
+        "Magnitue",
+        "Tot size",
+        "Number",
+        "Weight"
+      ],
+      "mean_contrib": {
+        "IAT": 3.7317819595336914,
+        "Magnitue": 1.7752344608306885,
+        "Tot size": 1.5211548805236816,
+        "Number": 0.922514021396637,
+        "Weight": 0.5923236012458801
+      }
+    }
+  },
+  "notes": [
+    "Robustness evaluation is inference-only; XGBoost models are not retrained.",
+    "Legacy attacks are applied to malicious rows only; benign rows remain unchanged in legacy mode.",
+    "Realistic mode adds query-limited black-box attacks for both malicious evasion and benign-side FPR drift.",
+    "Constraints use train-sampled percentiles with non-negativity projection and locked feature invariants."
+  ]
+}

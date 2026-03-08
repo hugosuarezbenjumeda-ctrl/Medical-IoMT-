@@ -1,0 +1,181 @@
+{
+  "generated_at": "2026-03-08T16:00:04.983227",
+  "run_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851",
+  "output_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39",
+  "files": {
+    "robustness_metrics_global_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\robustness_metrics_global.csv",
+    "robustness_metrics_protocol_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\robustness_metrics_protocol.csv",
+    "robustness_metrics_by_epsilon_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\robustness_metrics_by_epsilon.json",
+    "perturbation_stats_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\perturbation_stats.csv",
+    "constraints_summary_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\constraints_summary.csv",
+    "attack_config_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851\\xgb_robustness_smoke_py39\\attack_config.json"
+  },
+  "feature_count": 45,
+  "protocols": [
+    "bluetooth",
+    "mqtt",
+    "wifi"
+  ],
+  "train_sampling": {
+    "counts_available": {
+      "wifi": 7086155,
+      "bluetooth": 123235,
+      "mqtt": 460502
+    },
+    "counts_sampled": {
+      "wifi": 1000,
+      "bluetooth": 1000,
+      "mqtt": 1000
+    },
+    "target_per_protocol": 1000,
+    "rows_sampled_total": 3000
+  },
+  "eval_sampling": {
+    "counts_available": {
+      "bluetooth::0": 6671,
+      "bluetooth::1": 25170,
+      "mqtt::1": 63715,
+      "wifi::0": 41737,
+      "wifi::1": 1512860
+    },
+    "counts_sampled": {
+      "bluetooth::0": 200,
+      "bluetooth::1": 200,
+      "mqtt::1": 200,
+      "wifi::0": 200,
+      "wifi::1": 200
+    },
+    "sample_attack_per_protocol": 200,
+    "sample_benign_per_protocol": 200,
+    "rows_sampled_total": 1000
+  },
+  "surrogate_meta": {
+    "bluetooth": {
+      "n_rows": 1000,
+      "n_pos": 812,
+      "n_neg": 188,
+      "single_class": 0
+    },
+    "mqtt": {
+      "n_rows": 1000,
+      "n_pos": 594,
+      "n_neg": 406,
+      "single_class": 0
+    },
+    "wifi": {
+      "n_rows": 1000,
+      "n_pos": 954,
+      "n_neg": 46,
+      "single_class": 0
+    }
+  },
+  "baseline_global": {
+    "tp": 595,
+    "tn": 400,
+    "fp": 0,
+    "fn": 5,
+    "precision": 1.0,
+    "recall": 0.9916666666666667,
+    "f1": 0.99581589958159,
+    "fpr": 0.0,
+    "n": 1000,
+    "n_benign": 400,
+    "n_attack": 600
+  },
+  "baseline_by_protocol": {
+    "bluetooth": {
+      "tp": 196,
+      "tn": 200,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.98,
+      "f1": 0.98989898989899,
+      "fpr": 0.0,
+      "n": 400,
+      "n_benign": 200,
+      "n_attack": 200
+    },
+    "mqtt": {
+      "tp": 199,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.995,
+      "f1": 0.9974937343358395,
+      "fpr": 0.0,
+      "n": 200,
+      "n_benign": 0,
+      "n_attack": 200
+    },
+    "wifi": {
+      "tp": 200,
+      "tn": 200,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "n": 400,
+      "n_benign": 200,
+      "n_attack": 200
+    }
+  },
+  "shap_top_features_by_protocol": {
+    "bluetooth": {
+      "features": [
+        "Tot sum",
+        "Tot size",
+        "Max",
+        "Number",
+        "Header_Length"
+      ],
+      "mean_contrib": {
+        "Tot sum": 4.162956237792969,
+        "Tot size": 1.0867743492126465,
+        "Max": 0.6912781000137329,
+        "Number": 0.2595478296279907,
+        "Header_Length": 0.20495977997779846
+      }
+    },
+    "mqtt": {
+      "features": [
+        "Rate",
+        "syn_count",
+        "ack_count",
+        "IAT",
+        "rst_count"
+      ],
+      "mean_contrib": {
+        "Rate": 3.9934844970703125,
+        "syn_count": 2.3449039459228516,
+        "ack_count": 1.4730240106582642,
+        "IAT": 1.1014823913574219,
+        "rst_count": 1.00780189037323
+      }
+    },
+    "wifi": {
+      "features": [
+        "IAT",
+        "Magnitue",
+        "Tot size",
+        "Number",
+        "Weight"
+      ],
+      "mean_contrib": {
+        "IAT": 3.7642626762390137,
+        "Magnitue": 1.8253024816513062,
+        "Tot size": 1.5498141050338745,
+        "Number": 0.9234180450439453,
+        "Weight": 0.5981327295303345
+      }
+    }
+  },
+  "notes": [
+    "Robustness evaluation is inference-only; XGBoost models are not retrained.",
+    "Attacks are applied to malicious rows only; benign rows remain unchanged.",
+    "Constraints use train-sampled percentiles with non-negativity projection and locked feature invariants."
+  ]
+}

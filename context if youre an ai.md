@@ -1,4 +1,4 @@
-Project Context for Codex (READ THIS BEFORE CODING)
+﻿Project Context for Codex (READ THIS BEFORE CODING)
 
 One-liner: Build a flow-based intrusion detection model (IDS) for IoMT healthcare networks, trained on tabular flow features (not packet payloads), with attention to class imbalance, operational false positives, adversarial robustness, and explainability.
 
@@ -12,19 +12,19 @@ Baselines: Logistic Regression, Random Forest
 
 Main candidates: Gradient Boosting (XGBoost / LightGBM)
 
-Optional: small MLP if it’s clearly beneficial (but boosting is expected to be strong on tabular data).
+Optional: small MLP if itâ€™s clearly beneficial (but boosting is expected to be strong on tabular data).
 
 Evaluation must reflect real IDS tradeoffs:
 
 Prioritize precision/recall tradeoffs, FPR, PR-AUC, F1, confusion matrix.
 
-Include threshold policy selection (example: choose a threshold that targets FPR ≤ 1% and report resulting recall/precision; optionally compare to “maximize F1”).
+Include threshold policy selection (example: choose a threshold that targets FPR â‰¤ 1% and report resulting recall/precision; optionally compare to â€œmaximize F1â€).
 
 Robustness testing:
 
 Evaluate degradation under adversarial evasion on flow features (realistic constraints like non-negativity / plausible bounds).
 
-Track attack metrics like attack success rate and ΔF1 / robust recall (exact implementation can evolve).
+Track attack metrics like attack success rate and Î”F1 / robust recall (exact implementation can evolve).
 
 Explainability:
 
@@ -32,13 +32,13 @@ Provide global and per-instance explanations (e.g., feature importance / SHAP-st
 
 Data + constraints (important)
 
-We work at the flow/metadata level (source/dest, ports, protocol, counts/bytes/rates/timing summaries) — not packet payloads.
+We work at the flow/metadata level (source/dest, ports, protocol, counts/bytes/rates/timing summaries) â€” not packet payloads.
 
 This is intentional: flow-based monitoring is more scalable and avoids PHI/payload issues (and works even when traffic is encrypted).
 
-CICIoMT2024 includes traffic from multiple protocols (e.g., Wi-Fi, MQTT, BLE) and many attack types; expect heavy class imbalance (malicious ≫ benign).
+CICIoMT2024 includes traffic from multiple protocols (e.g., Wi-Fi, MQTT, BLE) and many attack types; expect heavy class imbalance (malicious â‰« benign).
 
-Definition of “DONE” for the modeling work
+Definition of â€œDONEâ€ for the modeling work
 
 There is a single, reproducible pipeline that can:
 
@@ -48,7 +48,7 @@ train multiple candidate models with consistent splits,
 
 output a comparison report (metrics + curves),
 
-select a “best” model + threshold policy,
+select a â€œbestâ€ model + threshold policy,
 
 run adversarial stress tests,
 
@@ -66,7 +66,7 @@ Always log work:
 
 if you modify code/results/decisions, append a Conversation Timeline entry in this file and update Right Now + Recent Changes.
 
-Keep outputs “research-friendly”:
+Keep outputs â€œresearch-friendlyâ€:
 
 write results to /reports/ (or similar), save figures, save metrics as JSON/CSV, and save trained model artifacts.
 
@@ -129,16 +129,56 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 
 
 ## Right Now
-- Working on: XGBoost interpretability and operator UX are now implemented for protocol-routed models; explainability artifacts were generated from `reports/full_gpu_hpo_models_20260306_195851/` and a Streamlit IDS console is ready for use.
+- Working on: Realistic robustness v2 is implemented in `evaluate_xgb_robustness.py` (query-limited black-box hillclimb for malicious evasion + benign-side effects, relation-aware constraints, new query metrics outputs, GPU inference toggle).
 - Branch: main
-- Files in focus: `scripts/xgb_protocol_ids_utils.py`, `scripts/generate_xgb_explainability_artifacts.py`, `scripts/generate_xgb_explainability_artifacts.sbatch`, `scripts/ids_xgb_interpretability_ui.py`, `reports/XGBOOST_INTERPRETABILITY_UI.md`, and `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability/`.
-- Blockers: Local interactive runtime still has `.venv` NumPy `X86_V2` CPU incompatibility; explainability generation is validated via Slurm with a scratch venv bootstrap.
+- Files in focus: `scripts/evaluate_xgb_robustness.py`, `scripts/evaluate_xgb_robustness.sbatch`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_smoke/*`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_smoke_det/*`.
+- Blockers: No functional blockers.
 
 ## Recent Changes
 - YYYY-MM-DD HH:MM (TZ) - Change:
   - Why:
   - Commands run:
   - Result:
+- 2026-03-08 17:12 (Europe/Berlin) - Added GPU-aware inference selection + GPU-default robustness sbatch launcher
+  - Why: User requested using GPU whenever beneficial; query-limited robustness repeatedly scores XGBoost models and can leverage GPU inference when available.
+  - Commands run: patched `scripts/evaluate_xgb_robustness.py` with `--xgb-device {auto,cpu,cuda}` and runtime device auto-fallback (`configure_boosters_device`); patched `scripts/evaluate_xgb_robustness.sbatch` to `gpu` partition with `--gres=gpu:1` and default `XGB_DEVICE=cuda`; syntax-checked with `.venv39` `py_compile`.
+  - Result: Robustness script now explicitly supports GPU inference selection and logs resolved device; sbatch defaults align with GPU-first execution.
+- 2026-03-08 17:12 (Europe/Berlin) - Implemented realistic robustness v2 + validated smoke and determinism
+  - Why: User requested a realistic robustness mode: query-limited black-box attacks, relation-aware constraints, benign-side perturbation, additional artifacts, and progress visibility.
+  - Commands run: extended `scripts/evaluate_xgb_robustness.py` with realistic-mode CLI, realism profile construction, relation constraints, sparse query hillclimb attacks (`query_sparse_hillclimb`, `query_sparse_hillclimb_benign`), query-trace logging, and new outputs (`robustness_query_metrics_global/protocol.csv`, `realism_profile.json`, `query_trace_summary.json`); executed repeated smoke runs to `.../xgb_robustness_realistic_smoke`; executed deterministic rerun to `.../xgb_robustness_realistic_smoke_det`; compared hashes/JSON runs.
+  - Result: Realistic mode is working end-to-end with periodic ETA progress, zero reported projection violations in smoke output, epsilon=0 query metrics matching baseline F1, and deterministic query metric artifacts for fixed seed.
+- 2026-03-08 16:11 (Europe/Berlin) - Full-budget robustness evaluation executed successfully
+  - Why: User requested running a full proper robustness run (not smoke) and required visible progress.
+  - Commands run: executed `.venv39` run of `scripts/evaluate_xgb_robustness.py` with full plan settings (`sample-attack-per-protocol=25000`, `sample-benign-per-protocol=25000`, `surrogate-train-per-protocol=200000`, `surrogate-epochs=12`, epsilons `0,0.01,0.02,0.05,0.10`, methods `surrogate_fgsm,surrogate_pgd,heuristic_shap`, `chunk-size=250000`) into `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_full_20260308_1610`.
+  - Result: Run completed with full progress logs and generated all robustness artifacts (`robustness_metrics_global/protocol`, `robustness_metrics_by_epsilon.json`, `perturbation_stats.csv`, `constraints_summary.csv`, `attack_config.json`, `summary.json`).
+- 2026-03-08 16:00 (Europe/Berlin) - Repaired local Python environment for robustness script execution
+  - Why: User hit NumPy C-extension import failure in `.venv` after creating it with Python 3.13 and asked for hands-on fix.
+  - Commands run: enumerated installed interpreters (`py -0p`), created fresh venv on Python 3.9 (`py -3.9 -m venv .venv39`), upgraded tooling (`pip/setuptools/wheel`), installed runtime dependencies (`numpy==1.26.4`, `pandas==2.2.3`, `xgboost==2.1.4`), validated imports and script help, then executed smoke run to `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_smoke_py39`.
+  - Result: Robustness pipeline now runs successfully end-to-end from `.venv39` with progress logs and output artifacts generated.
+- 2026-03-08 15:50 (Europe/Berlin) - Implemented XGBoost robustness evaluator + smoke-validated outputs
+  - Why: User requested implementing the agreed robustness plan against the three protocol-routed trained XGBoost models, including constrained attacks and required metrics.
+  - Commands run: added `scripts/evaluate_xgb_robustness.py` and `scripts/evaluate_xgb_robustness.sbatch`; syntax-checked with `.venv` `py_compile`; executed smoke robustness runs with sampled settings and epsilons (`0,0.02`) into `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_smoke`; validated output presence and basic invariants/consistency (delta-F1 at epsilon 0, locked-feature stability, unlocked-bound checks).
+  - Result: New robustness pipeline now produces `robustness_metrics_global.csv`, `robustness_metrics_protocol.csv`, `robustness_metrics_by_epsilon.json`, `perturbation_stats.csv`, `constraints_summary.csv`, `attack_config.json`, and `summary.json`; console progress/ETA logging is included for long processing phases.
+- 2026-03-07 14:04 (Europe/Berlin) - Added simplified Vite React IDS replay UI + simulation-data pipeline
+  - Why: User requested replacing the complex Streamlit interface with a simpler React app that always replays `metadata_test.csv`, with sequential alerts and explainability.
+  - Commands run: installed Node.js LTS (`winget`); scaffolded `web/ids-react-ui` (Vite React); added `scripts/generate_ids_react_simulation_data.py`; generated `web/ids-react-ui/public/simulation_data.json` using per-protocol XGBoost models and explainability utilities; rewrote React UI (`src/App.jsx`, `src/index.css`); added launch/docs helpers (`start_ids_react_ui.bat`, `build_ids_react_sim_small.bat`, `web/ids-react-ui/README_SIMULATOR.md`); verified with `npm run build` and local dev server health (`http://127.0.0.1:5173` -> HTTP 200).
+  - Result: New UI provides fixed-rate replay controls (start/pause/reset), sequential alert stream, click-through local explanations, and always-visible global explanations; current simulation artifact is capped for rapid iteration and full-generation command is documented.
+- 2026-03-07 13:23 (Europe/Berlin) - Added sequential replay mode and large-file handling in Streamlit UI
+  - Why: User reported that upload behavior should simulate flows over time and that the default 200MB upload cap blocks realistic test files.
+  - Commands run: patched `scripts/ids_xgb_interpretability_ui.py` (batch source mode, local CSV path support, one-shot row cap, sequential simulation with tick-based replay/history/recent alerts), added `.streamlit/config.toml` with increased upload/message limits, syntax-checked (`.venv` py_compile), restarted UI and verified `http://localhost:8501` returns `200`.
+  - Result: UI now supports realistic sequential flow replay controls and can bypass upload limits via local file path; Streamlit upload limit raised to 2GB for environments where browser/system constraints allow it.
+- 2026-03-07 12:58 (Europe/Berlin) - Full explainability artifacts generated + Streamlit startup validated
+  - Why: Complete the continuation task end-to-end after dependency setup and smoke validation.
+  - Commands run: executed full generator run (`.venv` python) for `reports/full_gpu_hpo_models_20260306_195851`; inspected output files and `summary.json`; launched Streamlit app headless on local ports (`8521`, `8522`) to confirm runtime startup.
+  - Result: Full explainability bundle is now present at `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability/` and UI server starts successfully using `streamlit run scripts/ids_xgb_interpretability_ui.py`.
+- 2026-03-07 12:56 (Europe/Berlin) - Provisioned local venv dependencies + validated explainability smoke run
+  - Why: The previous local sync was blocked from runtime validation due missing Python packages.
+  - Commands run: created venv (`py -3 -m venv .venv`); installed dependencies with venv python (`numpy`, `pandas`, `xgboost`, `streamlit`); ran smoke artifact generation with reduced caps to `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability_smoke`; re-ran syntax checks and verified Streamlit CLI version.
+  - Result: Local runtime is functional for the explainability stack; smoke outputs now include global feature rankings, local case explanations, case/reference rows, and summary/manifest files under `xgb_explainability_smoke`.
+- 2026-03-07 12:50 (Europe/Berlin) - Synced local repo with XGBoost explainability + UI stack
+  - Why: User requested continuation of global/local explanation and UI setup after re-reading the context file.
+  - Commands run: re-read `context if youre an ai.md`; audited local `scripts/` and `reports/` state; added `scripts/xgb_protocol_ids_utils.py`, `scripts/generate_xgb_explainability_artifacts.py`, `scripts/ids_xgb_interpretability_ui.py`, `scripts/generate_xgb_explainability_artifacts.sbatch`, and `reports/XGBOOST_INTERPRETABILITY_UI.md`; syntax-checked via `py -3 -m py_compile`; attempted lightweight artifact-generation smoke run.
+  - Result: Missing explainability/UI components are now present in the local repository with protocol-routed prediction, threshold-aware local explanations, global importance outputs, and Streamlit workflows; runtime smoke test is currently blocked by missing local Python packages (`numpy`, `pandas`, `xgboost`, `streamlit`).
 - 2026-03-07 12:00 (Europe/Madrid) - Added XGBoost explainability pipeline + IDS UI and generated artifacts
   - Why: User chose per-protocol XGBoost models and requested local/global explainability plus real-world IDS user experience.
   - Commands run: re-read `/home/capstone15/context if youre an ai.md`, `reports/EDA_FOR_MODELING.md`, and latest run artifacts (`reports/full_gpu_hpo_models_20260306_195851/*`); added `scripts/xgb_protocol_ids_utils.py`, `scripts/generate_xgb_explainability_artifacts.py`, `scripts/ids_xgb_interpretability_ui.py`, `scripts/generate_xgb_explainability_artifacts.sbatch`, and `reports/XGBOOST_INTERPRETABILITY_UI.md`; syntax-checked (`python3 -m py_compile`, `bash -n`); submitted explainability jobs `82`, `83`, `84` via `sbatch`; inspected `squeue`, `sacct`, and `reports/ids-xgb-explain_*.log`; patched threshold parser bug in `load_thresholds_by_protocol` and regenerated artifacts.
@@ -412,8 +452,128 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
   - Actions taken: Re-read context + modeling guidance, inspected latest run outputs in `reports/full_gpu_hpo_models_20260306_195851/`, implemented reusable routing/explainability utilities (`scripts/xgb_protocol_ids_utils.py`), added artifact generator (`scripts/generate_xgb_explainability_artifacts.py`) and Streamlit app (`scripts/ids_xgb_interpretability_ui.py`), added Slurm launcher (`scripts/generate_xgb_explainability_artifacts.sbatch`) and usage guide (`reports/XGBOOST_INTERPRETABILITY_UI.md`), submitted jobs `82`/`83`/`84`, diagnosed dependency and threshold-mapping issues, patched and reran.
   - Outcome: Explainability artifacts are now generated at `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability/` with per-protocol global importance tables + local case explanations; Streamlit IDS console supports live inference, batch scoring, global explanation views, and local case exploration.
   - Next session should start with: Launch the Streamlit UI in an environment with `streamlit` installed and optionally wire a live packet/flow ingestion source to feed batch scoring continuously.
+- 2026-03-07 12:50 (Europe/Berlin) - Local continuation: explainability/UI files synced and validated for syntax
+  - User intent: Continue the global/local explainability + UI setup, but first re-read the AI context file to stay aligned.
+  - Actions taken: Re-read `context if youre an ai.md`; inspected local repo and confirmed missing explainability/UI files in this workspace; added `scripts/xgb_protocol_ids_utils.py`, `scripts/generate_xgb_explainability_artifacts.py`, `scripts/generate_xgb_explainability_artifacts.sbatch`, `scripts/ids_xgb_interpretability_ui.py`, and `reports/XGBOOST_INTERPRETABILITY_UI.md`; ran `py -3 -m py_compile` for syntax validation; attempted a lightweight generation run and checked package availability.
+  - Outcome: Local repository now includes protocol-routed XGBoost explainability and Streamlit UX components with runbook docs; runtime execution remains blocked in this shell due missing `numpy/pandas/xgboost/streamlit`.
+  - Next session should start with: Install required Python packages in project venv, run `generate_xgb_explainability_artifacts.py`, then launch `streamlit run scripts/ids_xgb_interpretability_ui.py`.
+- 2026-03-07 12:56 (Europe/Berlin) - Local dependency install + smoke explainability generation
+  - User intent: Continue setup end-to-end and verify that explainability artifact creation works locally.
+  - Actions taken: Created `.venv`; installed `numpy`, `pandas`, `xgboost`, and `streamlit`; executed `scripts/generate_xgb_explainability_artifacts.py` with reduced sampling limits to produce a smoke output bundle; confirmed Streamlit installation/version.
+  - Outcome: Smoke bundle generated successfully at `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability_smoke/` with all expected files (`global_feature_importance.csv`, local case artifacts, `reference_rows.csv`, `summary.json`, `manifest.json`).
+  - Next session should start with: Run full-size artifact generation into `<run-dir>/xgb_explainability` and launch the Streamlit UI for manual operator flow validation.
+- 2026-03-07 12:58 (Europe/Berlin) - Full-size explainability generation + UI runtime startup check
+  - User intent: Finish the continuation task by completing full output generation and validating UI startup.
+  - Actions taken: Ran full `scripts/generate_xgb_explainability_artifacts.py` pass into `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability/`; inspected generated files and `summary.json`; launched Streamlit app headless to verify server startup and URL binding.
+  - Outcome: Full local explainability bundle is generated and the Streamlit IDS UI starts successfully with the updated scripts and artifacts.
+  - Next session should start with: Perform interactive UI validation (single-flow, batch upload, global/case tabs) and, if needed, connect a live flow ingestion source.
+- 2026-03-07 13:23 (Europe/Berlin) - UI usability patch for sequential replay + large input handling
+  - User intent: Make batch behavior feel like realistic time-sequenced flow processing and address 200MB upload blocking.
+  - Actions taken: Updated `scripts/ids_xgb_interpretability_ui.py` to add batch source selection (upload vs local path), one-shot row-limited local scoring, and tick-based sequential replay simulation with configurable rows/tick and flows/sec plus replay metrics/history/recent alerts; added `.streamlit/config.toml` to increase `server.maxUploadSize`/`server.maxMessageSize` to 2048MB; validated syntax and restarted UI.
+  - Outcome: Operators can now replay flows in sequential chunks over simulated time and avoid upload-size limitations by pointing directly to local CSV files.
+  - Next session should start with: Tune replay parameters against target traffic assumptions and validate alarm cadence with representative capture windows.
+- 2026-03-07 14:04 (Europe/Berlin) - Vite React simulator migration for simplified fixed-data replay
+  - User intent: Replace complex Streamlit UX with a simpler Vite React simulator that always uses `metadata_test.csv`, replays alerts sequentially at a fixed derived speed, and exposes local/global explanations.
+  - Actions taken: Installed Node.js LTS and npm toolchain; scaffolded `web/ids-react-ui`; created `scripts/generate_ids_react_simulation_data.py` to precompute replay windows and alert explanations from protocol-routed XGBoost artifacts; generated a capped simulation bundle (`max_windows=5000`) into `web/ids-react-ui/public/simulation_data.json`; rewrote `src/App.jsx`/`src/index.css` for minimal operator flow (start/pause/reset, live alert feed, local explanation view, global explanation panel); added usage docs and launcher scripts.
+  - Outcome: React simulator is running locally at `http://127.0.0.1:5173`, with sequential alert popups and explainability aligned to the selected XGBoost models.
+  - Next session should start with: Generate full uncapped simulation bundle (`--max-windows 0`) once UX behavior is confirmed acceptable.
+- 2026-03-08 15:50 (Europe/Berlin) - Robustness attack pipeline implementation (local)
+  - User intent: Implement a full robustness evaluation workflow for the three trained protocol XGBoost models, including surrogate-transfer FGSM/PGD, constrained SHAP heuristic evasion, strict feature constraints, and required robustness metrics.
+  - Actions taken: Added `scripts/evaluate_xgb_robustness.py` with protocol-balanced sampling, per-protocol percentile-bound constraints, semantic/auto locked features, NumPy logistic surrogate training, FGSM/PGD generation in normalized space, SHAP-top constrained attack, global/per-protocol metric reporting (`ASR`, robust `F1/recall`, `Î”F1`, `L0/L2/Lâˆž`), and progress/ETA console logging; added `scripts/evaluate_xgb_robustness.sbatch`; ran smoke executions and validated outputs/invariants.
+  - Outcome: Robustness artifacts are generated successfully in `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_smoke/` with the expected file set and baseline consistency checks.
+  - Next session should start with: Launch a larger/full-budget robustness run and interpret per-protocol/per-epsilon degradation patterns for thesis reporting.
+- 2026-03-08 16:00 (Europe/Berlin) - Python environment remediation for robustness runtime
+  - User intent: After receiving full access, fix the NumPy import/runtime issue directly and get the robustness script running.
+  - Actions taken: Detected available interpreters (`3.13`, `3.9`), created a clean Python 3.9 environment (`.venv39`), installed pinned runtime packages, validated module imports + `--help`, and executed a full smoke robustness run with generated artifacts.
+  - Outcome: Environment is functional using `.venv39`; robustness run completes with live progress output and artifacts under `xgb_robustness_smoke_py39`.
+  - Next session should start with: Use `.venv39` for robustness runs, or install Python 3.11/3.12 and recreate canonical `.venv` if strict naming is needed.
+- 2026-03-08 16:11 (Europe/Berlin) - Full robustness run completed with progress logging
+  - User intent: Run a full proper robustness test (not smoke) and ensure progress visibility during execution.
+  - Actions taken: Ran `.venv39` execution of `scripts/evaluate_xgb_robustness.py` with full attack/sample settings and observed progress output across counting/sampling/surrogate epochs/attack loops; generated output bundle in `xgb_robustness_full_20260308_1610`.
+  - Outcome: Full run completed successfully with all expected artifact files; progress logging proved usable for long processing stages.
+  - Next session should start with: Interpret and summarize per-protocol robustness degradation across epsilon and attack methods for thesis-ready reporting.
+- 2026-03-08 17:12 (Europe/Berlin) - Realistic robustness v2 implementation and validation
+  - User intent: Implement a more realistic robustness strategy with query-limited black-box attacks, protocol-aware relation constraints, benign-side perturbation effects, and dedicated reporting outputs.
+  - Actions taken: Extended `scripts/evaluate_xgb_robustness.py` with realistic mode, realism profiles, relation-constraint projection, sparse coordinate query hillclimb attacks for both malicious and benign targets, and new output artifacts; added GPU inference selector (`--xgb-device`) with auto CUDA fallback logic; updated `scripts/evaluate_xgb_robustness.sbatch` to request GPU and pass device option; ran realistic smoke + deterministic rerun and validated invariants/consistency.
+  - Outcome: New realistic pipeline outputs are generated successfully in `xgb_robustness_realistic_smoke*`, including query metrics and trace/profile JSON files; deterministic metrics were confirmed under fixed seed.
+  - Next session should start with: Execute a full realistic campaign (balanced pilot or higher budgets) and compare realistic-query degradation against legacy surrogate/SHAP results for thesis interpretation.
 
 ## Session Summary (Most Recent)
-- Date: 2026-03-07 (Europe/Madrid)
-- Summary: Implemented the interpretability and UX layer for the selected protocol-routed XGBoost IDS models. Added shared utilities for model/threshold loading and routed predictions (`scripts/xgb_protocol_ids_utils.py`), a full explainability artifact generator (`scripts/generate_xgb_explainability_artifacts.py`), and an operator-facing Streamlit console (`scripts/ids_xgb_interpretability_ui.py`) with live inference, batch scoring, global feature-importance views, and local case explorer tabs. Added quickstart docs and Slurm launcher; after patching threshold parsing, job `84` completed and produced the artifact bundle under `reports/full_gpu_hpo_models_20260306_195851/xgb_explainability/`.
-- Immediate next action: Launch the Streamlit app from an environment with `streamlit` available and validate UI flows with `reference_rows.csv` plus a sample uploaded CSV batch.
+- Date: 2026-03-08 (Europe/Berlin)
+- Summary: Implemented realistic robustness v2 in `scripts/evaluate_xgb_robustness.py` while preserving legacy outputs: new query-limited black-box attacks for malicious evasion and benign-side FPR drift, protocol relation constraints (`Min<=AVG<=Max`, ratio-band constraints), local perturbation caps, realistic campaign sampling/budgets, dedicated query artifacts (`robustness_query_metrics_global/protocol.csv`, `realism_profile.json`, `query_trace_summary.json`), and progress/ETA logs through long loops. Added GPU inference control (`--xgb-device`) with auto fallback and switched `scripts/evaluate_xgb_robustness.sbatch` to GPU defaults. Validated via realistic smoke run and deterministic rerun with matching query metric artifacts for fixed seed.
+- Immediate next action: Launch a full realistic run (higher budgets/sample caps) and produce interpretation comparing realistic query attacks vs legacy surrogate/SHAP robustness degradation.
+## Session Update (2026-03-07, MIoT IDS Prototype refinements)
+
+- React UI title changed to `MIoT IDS Prototype`.
+- Local explanations now include:
+  - Human-readable feature labels.
+  - Feature-level plain-language descriptions.
+  - A short textual narrative explaining why an alert was flagged.
+- Replay pacing set to 1 flow/s by generating simulation data with:
+  - `--window-rows 50 --window-seconds 50`
+- Replay/order and alert feed diversity improved by generator defaults:
+  - `--replay-order interleave-protocol-source`
+  - `--sampling-strategy balanced-protocol`
+- UI stats split into:
+  - `Alerts Detected` (all model detections)
+  - `Alerts Surfaced` (alerts shown in sequential feed)
+  This addresses perceived lag between total detections and displayed alerts.
+- Current generated `simulation_data.json` now reports mixed sampled protocols early (mqtt/wifi/bluetooth) and flow rate = 1.0 flow/s.
+
+## Session Update (2026-03-08, Realtime Inference Integration)
+
+- Added realtime backend API: `scripts/ids_realtime_api.py`.
+  - Runs protocol-routed XGBoost inference live on `metadata_test.csv`.
+  - Computes local explanations only for detected alerts.
+  - Exposes endpoints:
+    - `GET /api/init`
+    - `GET /api/state`
+    - `POST /api/start`
+    - `POST /api/pause`
+    - `POST /api/reset`
+    - `GET /api/health`
+- React UI migrated from static `simulation_data.json` replay to realtime API polling.
+  - `web/ids-react-ui/src/App.jsx` now consumes `/api/*`.
+  - UI remains titled `MIoT IDS Prototype`.
+- Vite proxy added so frontend can call backend locally without CORS friction.
+  - `web/ids-react-ui/vite.config.js` proxies `/api` -> `http://127.0.0.1:8000`.
+- Added launcher script for realtime API:
+  - `start_ids_realtime_api.bat`.
+- Updated docs and startup hints:
+  - `web/ids-react-ui/README_SIMULATOR.md`
+  - `start_ids_react_ui.bat`
+- Verified live run:
+  - API healthy at `http://127.0.0.1:8000/api/health`.
+  - UI dev server healthy at `http://127.0.0.1:5173` and proxy to `/api/health` works.
+
+## Context Refresh (2026-03-08, User-requested update)
+
+### Current System State
+- Prototype mode: **Realtime inference** (not precomputed replay).
+- Frontend: Vite React app (`web/ids-react-ui`) at `http://127.0.0.1:5173`.
+- Backend: Python stdlib HTTP API (`scripts/ids_realtime_api.py`) at `http://127.0.0.1:8000`.
+- API is consumed from frontend through Vite proxy (`/api` -> `127.0.0.1:8000`).
+
+### Realtime Behavior
+- Three protocol-routed XGBoost models are loaded from run dir and used live per row.
+- Simulation default speed: `1 row/flow per second`.
+- Local explanations are computed for surfaced alerts in realtime.
+- Global explanations are precomputed once at API startup.
+
+### Main Endpoints
+- `GET /api/health`
+- `GET /api/init`
+- `GET /api/state`
+- `POST /api/start`
+- `POST /api/pause`
+- `POST /api/reset`
+
+### Startup Commands
+- Backend: `start_ids_realtime_api.bat`
+- Frontend: `start_ids_react_ui.bat`
+
+### Notes
+- UI title: `MIoT IDS Prototype`.
+- Local explanation panel uses human-readable feature labels + plain-language rationale text.
+- Alert counters are split into `Alerts Detected` vs `Alerts Surfaced`.
+

@@ -11,6 +11,10 @@
 .cache/
 .local/
 .venvs/
+.venv/
+.venv39/
+.npm-cache/
+.streamlit/
 .vscode-server/
 .codex/
 .copilot/

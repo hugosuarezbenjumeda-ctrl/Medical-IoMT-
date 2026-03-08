@@ -1,0 +1,10 @@
+case_id,protocol_used,outcome,label_true,prediction,score_attack,threshold,attack_family,attack_name,source_relpath,source_row_index
+bluetooth_TP_001,bluetooth,TP,1,1,0.9989697933197021,0.998250424861908,Other,Bluetooth_DoS,Bluetooth/attacks/csv/test/Bluetooth_DoS_test.pcap.csv,360
+bluetooth_TN_001,bluetooth,TN,0,0,0.06212826445698738,0.998250424861908,Benign,Bluetooth_Benign,Bluetooth/attacks/csv/test/Bluetooth_Benign_test.pcap.csv,1
+bluetooth_FN_001,bluetooth,FN,1,0,0.290205180644989,0.998250424861908,Other,Bluetooth_DoS,Bluetooth/attacks/csv/test/Bluetooth_DoS_test.pcap.csv,1
+mqtt_TP_001,mqtt,TP,1,1,0.9999979734420776,0.8607712984085083,DDoS,MQTT-DDoS-Connect_Flood,WiFI_and_MQTT/attacks/csv/test/MQTT-DDoS-Connect_Flood_test.pcap.csv,1
+wifi_TP_001,wifi,TP,1,1,0.240467831492424,0.2261005938053131,Spoofing,ARP_Spoofing,WiFI_and_MQTT/attacks/csv/test/ARP_Spoofing_test.pcap.csv,1
+wifi_TN_001,wifi,TN,0,0,0.0007601974066346884,0.2261005938053131,Benign,Benign,WiFI_and_MQTT/attacks/csv/test/Benign_test.pcap.csv,1
+wifi_FP_001,wifi,FP,0,1,0.23771439492702484,0.2261005938053131,Benign,Benign,WiFI_and_MQTT/attacks/csv/test/Benign_test.pcap.csv,2293
+wifi_FN_001,wifi,FN,1,0,0.05011240765452385,0.2261005938053131,Spoofing,ARP_Spoofing,WiFI_and_MQTT/attacks/csv/test/ARP_Spoofing_test.pcap.csv,3
+mqtt_FN_001,mqtt,FN,1,0,0.7702575325965881,0.8607712984085083,Malformed,MQTT-Malformed_Data,WiFI_and_MQTT/attacks/csv/test/MQTT-Malformed_Data_test.pcap.csv,1

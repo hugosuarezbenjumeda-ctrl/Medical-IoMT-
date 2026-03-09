@@ -1,0 +1,4 @@
+C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\.venv39\lib\site-packages\xgboost\core.py:158: UserWarning: [10:58:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-08cbc0333d8d4aae1-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "predictor" } are not used.
+
+  warnings.warn(smsg, UserWarning)

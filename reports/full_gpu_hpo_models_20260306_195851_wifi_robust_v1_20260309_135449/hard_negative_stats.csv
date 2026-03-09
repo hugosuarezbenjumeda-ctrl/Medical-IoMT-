@@ -1,0 +1,4 @@
+split,epsilon,targeted_rows,baseline_false_alarm_rows,attack_successes_any,flip_rows,flip_rate,selected_rows,selected_rate,selected_topk_added_rows,attacked_pred_attack_rate,queries_total,queries_mean,queries_p95,accepted_moves_mean,below_lower_violations,above_upper_violations,locked_change_rows,locked_change_max_abs,cap_violation_rows,relation_violation_rows,relation_min_avg_max_rows,relation_tot_num_avg_rows,relation_rate_rows,baseline_detected_rows,evasion_flip_rows,evasion_flip_rate,robust_recall_under_attack
+train,0.05,40,0.0,1.0,1.0,0.025,6.0,0.15,5.0,0.025,398,9.95,10.0,0.575,0,0,0,0.0,0,0,0,0,0,,,,
+val,0.05,20,0.0,0.0,0.0,0.0,5.0,0.25,5.0,0.0,200,10.0,10.0,0.0,0,0,0,0.0,0,0,0,0,0,,,,
+val,0.05,20,,,,,,,,,200,10.0,10.0,1.05,0,0,0,0.0,0,0,0,0,0,20.0,0.0,0.0,1.0

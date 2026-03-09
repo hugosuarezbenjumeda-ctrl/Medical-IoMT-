@@ -1,0 +1,10 @@
+[PROGRESS +     0.0s] base_run_dir=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\reports\full_gpu_hpo_models_20260306_195851
+[PROGRESS +     0.0s] train_csv=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\data\merged\metadata_train.csv
+[PROGRESS +     0.0s] hardneg_epsilons=[0.05, 0.1]
+[PROGRESS +     0.2s] resolved_booster_device=cuda
+[PROGRESS +     0.2s] wifi_base_threshold=0.226101
+[PROGRESS +     5.6s] wifi load pass: chunks=4, scanned_rows=1200000, wifi_rows=813827
+[PROGRESS +    11.4s] wifi load pass: chunks=8, scanned_rows=2400000, wifi_rows=2013827
+[PROGRESS +    17.5s] wifi load pass: chunks=12, scanned_rows=3600000, wifi_rows=3213827
+[PROGRESS +    23.7s] wifi load pass: chunks=16, scanned_rows=4800000, wifi_rows=4413827
+[PROGRESS +    29.3s] wifi load pass: chunks=20, scanned_rows=6000000, wifi_rows=5613827

@@ -98,11 +98,28 @@ def load_thresholds_by_protocol(
     default_threshold: float = 0.5,
 ) -> Dict[str, float]:
     run_path = Path(run_dir)
+    custom_path = run_path / "thresholds_by_protocol.json"
     csv_path = run_path / "metrics_summary_per_protocol_models.csv"
     metrics = load_metrics_json(run_path)
     from_json = _extract_thresholds_from_metrics_json(metrics)
 
     thresholds: Dict[str, float] = {}
+    if custom_path.exists():
+        try:
+            with custom_path.open("r", encoding="utf-8") as f:
+                custom_payload = json.load(f)
+        except Exception:
+            custom_payload = {}
+        if isinstance(custom_payload, dict):
+            for proto_raw, thr_raw in custom_payload.items():
+                proto = protocol_slug(str(proto_raw))
+                try:
+                    thr_f = float(thr_raw)
+                except Exception:
+                    continue
+                if math.isfinite(thr_f):
+                    thresholds[proto] = thr_f
+
     if csv_path.exists():
         df = pd.read_csv(csv_path)
         if "model" in df.columns:
@@ -117,7 +134,7 @@ def load_thresholds_by_protocol(
                     proto = parsed if parsed else "unknown"
                 thr = pd.to_numeric(row.get("threshold"), errors="coerce")
                 if pd.notna(thr) and np.isfinite(float(thr)):
-                    thresholds[proto] = float(thr)
+                    thresholds.setdefault(proto, float(thr))
 
     for proto, thr in from_json.items():
         thresholds.setdefault(proto, thr)

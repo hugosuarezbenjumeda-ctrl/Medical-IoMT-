@@ -1,0 +1,141 @@
+[PROGRESS +     0.3s] run_dir=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\reports\full_gpu_hpo_models_20260306_195851
+[PROGRESS +     0.3s] output_dir=C:\Users\Hugo\Desktop\Thesis\Medical-IoMT-\reports\full_gpu_hpo_models_20260306_195851\xgb_robustness_realistic_full_20260308_190831
+[PROGRESS +     0.3s] protocols=['bluetooth', 'mqtt', 'wifi']
+[PROGRESS +     0.3s] attack_methods=['surrogate_fgsm', 'surrogate_pgd', 'heuristic_shap']
+[PROGRESS +     0.3s] epsilons=[0.0, 0.01, 0.02, 0.05, 0.1]
+[PROGRESS +     0.3s] realistic_mode=on
+[PROGRESS +     0.3s] xgb_inference_device=cuda
+[PROGRESS +     3.6s] train count pass: chunks=5, rows=1250000
+[PROGRESS +     6.6s] train count pass: chunks=10, rows=2500000
+[PROGRESS +     9.6s] train count pass: chunks=15, rows=3750000
+[PROGRESS +    12.7s] train count pass: chunks=20, rows=5000000
+[PROGRESS +    16.2s] train count pass: chunks=25, rows=6250000
+[PROGRESS +    19.5s] train count pass: chunks=30, rows=7500000
+[PROGRESS +    20.0s] train count pass complete: rows=7669892
+[PROGRESS +    25.1s] train sample pass: chunks=5, rows=1250000
+[PROGRESS +    29.3s] train sample pass: chunks=10, rows=2500000
+[PROGRESS +    34.3s] train sample pass: chunks=15, rows=3750000
+[PROGRESS +    39.4s] train sample pass: chunks=20, rows=5000000
+[PROGRESS +    44.5s] train sample pass: chunks=25, rows=6250000
+[PROGRESS +    50.0s] train sample pass: chunks=30, rows=7500000
+[PROGRESS +    51.0s] train sampling complete: sampled_rows=523235
+[PROGRESS +    51.0s] building constraints
+[PROGRESS +    52.0s] constraints ready
+[PROGRESS +    52.0s] building realism profiles
+[PROGRESS +    52.4s] realism profiles ready
+[PROGRESS +    52.4s] training surrogate models
+[PROGRESS +    52.6s] surrogate[bluetooth]: epoch 1/12, mean_bce=0.373845
+[PROGRESS +    52.6s] surrogate[bluetooth]: epoch 2/12, mean_bce=0.199939
+[PROGRESS +    52.6s] surrogate[bluetooth]: epoch 3/12, mean_bce=0.145240
+[PROGRESS +    52.7s] surrogate[bluetooth]: epoch 4/12, mean_bce=0.116322
+[PROGRESS +    52.7s] surrogate[bluetooth]: epoch 5/12, mean_bce=0.098665
+[PROGRESS +    52.7s] surrogate[bluetooth]: epoch 6/12, mean_bce=0.086499
+[PROGRESS +    52.8s] surrogate[bluetooth]: epoch 7/12, mean_bce=0.077832
+[PROGRESS +    52.9s] surrogate[bluetooth]: epoch 8/12, mean_bce=0.071148
+[PROGRESS +    52.9s] surrogate[bluetooth]: epoch 9/12, mean_bce=0.066051
+[PROGRESS +    53.0s] surrogate[bluetooth]: epoch 10/12, mean_bce=0.061773
+[PROGRESS +    53.0s] surrogate[bluetooth]: epoch 11/12, mean_bce=0.058171
+[PROGRESS +    53.1s] surrogate[bluetooth]: epoch 12/12, mean_bce=0.055232
+[PROGRESS +    53.3s] surrogate[mqtt]: epoch 1/12, mean_bce=0.279381
+[PROGRESS +    53.4s] surrogate[mqtt]: epoch 2/12, mean_bce=0.144744
+[PROGRESS +    53.5s] surrogate[mqtt]: epoch 3/12, mean_bce=0.112431
+[PROGRESS +    53.6s] surrogate[mqtt]: epoch 4/12, mean_bce=0.094807
+[PROGRESS +    53.7s] surrogate[mqtt]: epoch 5/12, mean_bce=0.083469
+[PROGRESS +    53.8s] surrogate[mqtt]: epoch 6/12, mean_bce=0.075479
+[PROGRESS +    53.9s] surrogate[mqtt]: epoch 7/12, mean_bce=0.069480
+[PROGRESS +    54.0s] surrogate[mqtt]: epoch 8/12, mean_bce=0.064753
+[PROGRESS +    54.1s] surrogate[mqtt]: epoch 9/12, mean_bce=0.060944
+[PROGRESS +    54.1s] surrogate[mqtt]: epoch 10/12, mean_bce=0.057793
+[PROGRESS +    54.2s] surrogate[mqtt]: epoch 11/12, mean_bce=0.055123
+[PROGRESS +    54.3s] surrogate[mqtt]: epoch 12/12, mean_bce=0.052839
+[PROGRESS +    54.6s] surrogate[wifi]: epoch 1/12, mean_bce=0.445397
+[PROGRESS +    54.8s] surrogate[wifi]: epoch 2/12, mean_bce=0.278664
+[PROGRESS +    54.9s] surrogate[wifi]: epoch 3/12, mean_bce=0.210748
+[PROGRESS +    55.0s] surrogate[wifi]: epoch 4/12, mean_bce=0.172287
+[PROGRESS +    55.1s] surrogate[wifi]: epoch 5/12, mean_bce=0.147230
+[PROGRESS +    55.1s] surrogate[wifi]: epoch 6/12, mean_bce=0.129121
+[PROGRESS +    55.2s] surrogate[wifi]: epoch 7/12, mean_bce=0.115732
+[PROGRESS +    55.4s] surrogate[wifi]: epoch 8/12, mean_bce=0.105584
+[PROGRESS +    55.5s] surrogate[wifi]: epoch 9/12, mean_bce=0.097672
+[PROGRESS +    55.6s] surrogate[wifi]: epoch 10/12, mean_bce=0.091566
+[PROGRESS +    55.7s] surrogate[wifi]: epoch 11/12, mean_bce=0.086597
+[PROGRESS +    55.8s] surrogate[wifi]: epoch 12/12, mean_bce=0.082541
+[PROGRESS +    55.8s] surrogate models ready
+[PROGRESS +    59.0s] test count pass: chunks=5, rows=1250000
+[PROGRESS +    60.0s] test count pass complete: rows=1650153
+[PROGRESS +    64.9s] test sample pass: chunks=5, rows=1250000
+[PROGRESS +    66.3s] test sampling complete: sampled_rows=106671
+[PROGRESS +    66.3s] running baseline scoring
+[PROGRESS +    66.7s] computing SHAP top features per protocol
+[PROGRESS +    66.8s] shap[bluetooth] top_features=['Tot sum', 'Tot size', 'Max', 'Number', 'Header_Length']
+[PROGRESS +    67.1s] shap[mqtt] top_features=['Rate', 'syn_count', 'ack_count', 'IAT', 'rst_count']
+[PROGRESS +    67.1s] shap[wifi] top_features=['IAT', 'Magnitue', 'Tot size', 'Number', 'Weight']
+[PROGRESS +    67.3s] attack run 1/15: method=surrogate_fgsm, epsilon=0.0
+[PROGRESS +    67.7s] completed method=surrogate_fgsm, epsilon=0.0 in 0.4s; ETA~0.1 min
+[PROGRESS +    67.7s] attack run 2/15: method=surrogate_fgsm, epsilon=0.01
+[PROGRESS +    68.3s] completed method=surrogate_fgsm, epsilon=0.01 in 0.6s; ETA~0.1 min
+[PROGRESS +    68.3s] attack run 3/15: method=surrogate_fgsm, epsilon=0.02
+[PROGRESS +    68.8s] completed method=surrogate_fgsm, epsilon=0.02 in 0.5s; ETA~0.1 min
+[PROGRESS +    68.8s] attack run 4/15: method=surrogate_fgsm, epsilon=0.05
+[PROGRESS +    69.4s] completed method=surrogate_fgsm, epsilon=0.05 in 0.6s; ETA~0.1 min
+[PROGRESS +    69.4s] attack run 5/15: method=surrogate_fgsm, epsilon=0.1
+[PROGRESS +    70.0s] completed method=surrogate_fgsm, epsilon=0.1 in 0.6s; ETA~0.1 min
+[PROGRESS +    70.0s] attack run 6/15: method=surrogate_pgd, epsilon=0.0
+[PROGRESS +    70.4s] completed method=surrogate_pgd, epsilon=0.0 in 0.5s; ETA~0.1 min
+[PROGRESS +    70.4s] attack run 7/15: method=surrogate_pgd, epsilon=0.01
+[PROGRESS +    71.9s] completed method=surrogate_pgd, epsilon=0.01 in 1.5s; ETA~0.2 min
+[PROGRESS +    71.9s] attack run 8/15: method=surrogate_pgd, epsilon=0.02
+[PROGRESS +    73.2s] completed method=surrogate_pgd, epsilon=0.02 in 1.3s; ETA~0.2 min
+[PROGRESS +    73.3s] attack run 9/15: method=surrogate_pgd, epsilon=0.05
+[PROGRESS +    75.1s] completed method=surrogate_pgd, epsilon=0.05 in 1.8s; ETA~0.2 min
+[PROGRESS +    75.1s] attack run 10/15: method=surrogate_pgd, epsilon=0.1
+[PROGRESS +    76.8s] completed method=surrogate_pgd, epsilon=0.1 in 1.7s; ETA~0.1 min
+[PROGRESS +    76.8s] attack run 11/15: method=heuristic_shap, epsilon=0.0
+[PROGRESS +    77.2s] completed method=heuristic_shap, epsilon=0.0 in 0.4s; ETA~0.0 min
+[PROGRESS +    77.2s] attack run 12/15: method=heuristic_shap, epsilon=0.01
+[PROGRESS +    77.7s] completed method=heuristic_shap, epsilon=0.01 in 0.5s; ETA~0.0 min
+[PROGRESS +    77.7s] attack run 13/15: method=heuristic_shap, epsilon=0.02
+[PROGRESS +    78.1s] completed method=heuristic_shap, epsilon=0.02 in 0.5s; ETA~0.0 min
+[PROGRESS +    78.1s] attack run 14/15: method=heuristic_shap, epsilon=0.05
+[PROGRESS +    78.6s] completed method=heuristic_shap, epsilon=0.05 in 0.4s; ETA~0.0 min
+[PROGRESS +    78.6s] attack run 15/15: method=heuristic_shap, epsilon=0.1
+[PROGRESS +    79.0s] completed method=heuristic_shap, epsilon=0.1 in 0.5s; ETA~0.0 min
+[PROGRESS +    79.0s] sampling realistic evaluation subset
+[PROGRESS +    82.2s] test count pass: chunks=5, rows=1250000
+[PROGRESS +    83.2s] test count pass complete: rows=1650153
+[PROGRESS +    87.9s] test sample pass: chunks=5, rows=1250000
+[PROGRESS +    89.5s] test sampling complete: sampled_rows=25000
+[PROGRESS +    89.5s] running realistic baseline scoring
+[PROGRESS +    89.6s] realistic run 1/10: method=query_sparse_hillclimb, epsilon=0.0, objective=malicious_evasion
+[PROGRESS +    89.7s] query_sparse_hillclimb[bluetooth] eps=0.0: 500/5000 samples, mean_queries=0.0, success_rate=0.134, ETA~0.0 min
+[PROGRESS +    89.7s] query_sparse_hillclimb[bluetooth] eps=0.0: 1000/5000 samples, mean_queries=0.0, success_rate=0.068, ETA~0.0 min
+[PROGRESS +    89.7s] query_sparse_hillclimb[bluetooth] eps=0.0: 1500/5000 samples, mean_queries=0.0, success_rate=0.049, ETA~0.0 min
+[PROGRESS +    89.8s] query_sparse_hillclimb[bluetooth] eps=0.0: 2000/5000 samples, mean_queries=0.0, success_rate=0.037, ETA~0.0 min
+[PROGRESS +    89.8s] query_sparse_hillclimb[bluetooth] eps=0.0: 2500/5000 samples, mean_queries=0.0, success_rate=0.030, ETA~0.0 min
+[PROGRESS +    89.8s] query_sparse_hillclimb[bluetooth] eps=0.0: 3000/5000 samples, mean_queries=0.0, success_rate=0.025, ETA~0.0 min
+[PROGRESS +    89.8s] query_sparse_hillclimb[bluetooth] eps=0.0: 3500/5000 samples, mean_queries=0.0, success_rate=0.023, ETA~0.0 min
+[PROGRESS +    89.8s] query_sparse_hillclimb[bluetooth] eps=0.0: 4000/5000 samples, mean_queries=0.0, success_rate=0.020, ETA~0.0 min
+[PROGRESS +    89.9s] query_sparse_hillclimb[bluetooth] eps=0.0: 4500/5000 samples, mean_queries=0.0, success_rate=0.018, ETA~0.0 min
+[PROGRESS +    89.9s] query_sparse_hillclimb[bluetooth] eps=0.0: 5000/5000 samples, mean_queries=0.0, success_rate=0.016, ETA~0.0 min
+[PROGRESS +    89.9s] query_sparse_hillclimb[mqtt] eps=0.0: 500/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    89.9s] query_sparse_hillclimb[mqtt] eps=0.0: 1000/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.0s] query_sparse_hillclimb[mqtt] eps=0.0: 1500/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.0s] query_sparse_hillclimb[mqtt] eps=0.0: 2000/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.0s] query_sparse_hillclimb[mqtt] eps=0.0: 2500/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.1s] query_sparse_hillclimb[mqtt] eps=0.0: 3000/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.1s] query_sparse_hillclimb[mqtt] eps=0.0: 3500/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.1s] query_sparse_hillclimb[mqtt] eps=0.0: 4000/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.1s] query_sparse_hillclimb[mqtt] eps=0.0: 4500/5000 samples, mean_queries=0.0, success_rate=0.000, ETA~0.0 min
+[PROGRESS +    90.2s] query_sparse_hillclimb[mqtt] eps=0.0: 5000/5000 samples, mean_queries=0.0, success_rate=0.003, ETA~0.0 min
+[PROGRESS +    90.2s] query_sparse_hillclimb[wifi] eps=0.0: 500/5000 samples, mean_queries=0.0, success_rate=0.018, ETA~0.0 min
+[PROGRESS +    90.2s] query_sparse_hillclimb[wifi] eps=0.0: 1000/5000 samples, mean_queries=0.0, success_rate=0.009, ETA~0.0 min
+[PROGRESS +    90.3s] query_sparse_hillclimb[wifi] eps=0.0: 1500/5000 samples, mean_queries=0.0, success_rate=0.006, ETA~0.0 min
+[PROGRESS +    90.3s] query_sparse_hillclimb[wifi] eps=0.0: 2000/5000 samples, mean_queries=0.0, success_rate=0.004, ETA~0.0 min
+[PROGRESS +    90.3s] query_sparse_hillclimb[wifi] eps=0.0: 2500/5000 samples, mean_queries=0.0, success_rate=0.004, ETA~0.0 min
+[PROGRESS +    90.3s] query_sparse_hillclimb[wifi] eps=0.0: 3000/5000 samples, mean_queries=0.0, success_rate=0.003, ETA~0.0 min
+[PROGRESS +    90.4s] query_sparse_hillclimb[wifi] eps=0.0: 3500/5000 samples, mean_queries=0.0, success_rate=0.003, ETA~0.0 min
+[PROGRESS +    90.4s] query_sparse_hillclimb[wifi] eps=0.0: 4000/5000 samples, mean_queries=0.0, success_rate=0.002, ETA~0.0 min
+[PROGRESS +    90.4s] query_sparse_hillclimb[wifi] eps=0.0: 4500/5000 samples, mean_queries=0.0, success_rate=0.002, ETA~0.0 min
+[PROGRESS +    90.5s] query_sparse_hillclimb[wifi] eps=0.0: 5000/5000 samples, mean_queries=0.0, success_rate=0.002, ETA~0.0 min
+[PROGRESS +    90.5s] completed realistic method=query_sparse_hillclimb, epsilon=0.0 in 0.9s; ETA~0.1 min
+[PROGRESS +    90.5s] realistic run 2/10: method=query_sparse_hillclimb, epsilon=0.01, objective=malicious_evasion

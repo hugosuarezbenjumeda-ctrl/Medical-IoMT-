@@ -1,0 +1,2 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train,0.05,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,31120,-0.22594075385131873,0.7553713023662567,8,3,3967456.0000254237,3967456.0

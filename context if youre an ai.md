@@ -129,16 +129,37 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 
 
 ## Right Now
-- Working on: Realistic robustness v2 is implemented in `evaluate_xgb_robustness.py` (query-limited black-box hillclimb for malicious evasion + benign-side effects, relation-aware constraints, new query metrics outputs, GPU inference toggle).
+- Working on: Robustness context backfill after confirming and interpreting completed realistic full run `xgb_robustness_realistic_full_20260308_212054`.
 - Branch: main
-- Files in focus: `scripts/evaluate_xgb_robustness.py`, `scripts/evaluate_xgb_robustness.sbatch`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_smoke/*`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_smoke_det/*`.
-- Blockers: No functional blockers.
+- Files in focus: `scripts/evaluate_xgb_robustness.py`, `scripts/evaluate_xgb_robustness.sbatch`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/robustness_query_metrics_global.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/robustness_query_metrics_protocol.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/perturbation_stats.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/query_trace_summary.json`.
+- Blockers: `mqtt` has no benign test rows, so benign-side FPR robustness for `mqtt` is not estimable (`not_available` by design).
+- Next decision pending: run WiFi-focused hardening (adversarial benign hard negatives + threshold recalibration) before additional architecture/model changes.
 
 ## Recent Changes
 - YYYY-MM-DD HH:MM (TZ) - Change:
   - Why:
   - Commands run:
   - Result:
+- 2026-03-09 10:07 (Europe/Berlin) - Backfilled missing context state into this file
+  - Why: User requested logging missing information before further work because project continuity appeared incomplete.
+  - Commands run: inspected this file sections (`Right Now`, `Recent Changes`, `Conversation Timeline`, `Session Summary`) and patched them with completed-run status, interpretation, and unresolved gaps.
+  - Result: Context now reflects the current robustness state, key risks, and next hardening decision instead of stale "run cancellation pending" status.
+- 2026-03-09 10:02 (Europe/Berlin) - Interpreted realistic full run `xgb_robustness_realistic_full_20260308_212054`
+  - Why: User asked to open and interpret the completed server run results.
+  - Commands run: reviewed `summary.json`, `robustness_query_metrics_global.csv`, `robustness_query_metrics_protocol.csv`, and `query_trace_summary.json`.
+  - Result: Malicious query evasion remained low-impact (global delta F1 about -0.0006 at epsilon 0.1), while benign-side query attack caused major FPR drift (global FPR 0.2329 at epsilon 0.1), concentrated in WiFi (WiFi FPR 0.4658 at epsilon 0.1).
+- 2026-03-09 09:35 (Europe/Berlin) - Server submission troubleshooting context gap identified
+  - Why: Prior interaction showed repeated confusion around remote project path and where outputs were written/downloaded.
+  - Commands run: verified available local artifacts and run directories after sync; checked that interpreted run exists locally under `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054`.
+  - Result: Clarified that completed outputs can be interpreted locally once synced; remaining gap is a documented one-command remote submit + fetch workflow for future runs.
+- 2026-03-08 19:14 (Europe/Berlin) - Cancellation check for local realistic robustness run
+  - Why: User requested canceling the currently running full local realistic robustness execution.
+  - Commands run: queried running Python processes for `evaluate_xgb_robustness.py` via `Get-CimInstance Win32_Process` and attempted forced stop when matched.
+  - Result: No matching active process was found (`killed=none`), indicating the run had already stopped by the time cancel was requested.
+- 2026-03-08 19:08 (Europe/Berlin) - Started full local realistic robustness run (background, CUDA)
+  - Why: User requested running the full evaluation directly from local machine without waiting for completion.
+  - Commands run: launched background process via `.venv39` Python with full realistic settings (`epsilons=0,0.01,0.02,0.05,0.10`, legacy methods enabled, realistic mode on, query budgets 300/150, realistic sample caps 5000/protocol, chunk size 250000, `--xgb-device cuda`) and timestamped output dir `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_190831`; logs at `ids-xgb-robust-realistic_full_20260308_190831.out.log/.err.log`.
+  - Result: Run started successfully and is actively emitting `[PROGRESS]` lines (train count pass in progress/completed and continuing).
 - 2026-03-08 17:12 (Europe/Berlin) - Added GPU-aware inference selection + GPU-default robustness sbatch launcher
   - Why: User requested using GPU whenever beneficial; query-limited robustness repeatedly scores XGBoost models and can leverage GPU inference when available.
   - Commands run: patched `scripts/evaluate_xgb_robustness.py` with `--xgb-device {auto,cpu,cuda}` and runtime device auto-fallback (`configure_boosters_device`); patched `scripts/evaluate_xgb_robustness.sbatch` to `gpu` partition with `--gres=gpu:1` and default `XGB_DEVICE=cuda`; syntax-checked with `.venv39` `py_compile`.
@@ -312,6 +333,26 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 - Commits:
 
 ## Conversation Timeline
+- 2026-03-09 10:07 (Europe/Berlin) - Missing-context backfill + robustness interpretation sync
+  - User intent: Log missing project state in this context file before further model work.
+  - Actions taken: Reviewed and interpreted completed realistic run outputs from `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054` (`summary.json`, query global/protocol metrics, query trace summary); updated `Right Now`, `Recent Changes`, and `Session Summary`.
+  - Outcome: Context now records the true latest robustness status and key risk (benign-side FPR drift, mainly WiFi), replacing stale "check if run completed" notes.
+  - Next session should start with: Implement WiFi-focused hardening and rerun realistic query evaluation to verify FPR reduction.
+- 2026-03-09 10:05 (Europe/Berlin) - Decision checkpoint after realistic run review
+  - User intent: Ask whether model fine-tuning is necessary after seeing robustness outputs.
+  - Actions taken: Assessed tradeoff between malicious-evasion robustness and benign-side instability from query-limited attack metrics.
+  - Outcome: Recommended targeted hardening (adversarial benign hard negatives + threshold recalibration) instead of full architecture overhaul.
+  - Next session should start with: Define hardening experiment configuration and acceptance criteria (target FPR bounds at fixed recall).
+- 2026-03-08 19:14 (Europe/Berlin) - User-requested cancel of local robustness run
+  - User intent: Cancel the locally launched full realistic robustness run.
+  - Actions taken: Searched running Windows `python.exe` processes for `evaluate_xgb_robustness.py` command lines and issued force-stop logic for matches.
+  - Outcome: No matching process remained at cancellation time, so nothing required termination.
+  - Next session should start with: Confirm whether the last run completed or failed by checking the `.out/.err` logs and output directory artifacts.
+- 2026-03-08 19:08 (Europe/Berlin) - Local full realistic robustness run launched in background
+  - User intent: Run the full realistic robustness evaluation locally and avoid waiting for completion interactively.
+  - Actions taken: Started `scripts/evaluate_xgb_robustness.py` with full settings in a background process using `.venv39` and `--xgb-device cuda`; set output to `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_190831`; validated startup via progress lines in `ids-xgb-robust-realistic_full_20260308_190831.out.log`.
+  - Outcome: Job is running locally with visible progress logging and artifacts being written to the new timestamped run directory.
+  - Next session should start with: Check completion status, parse generated query/global protocol metrics, and summarize robustness findings.
 - 2026-03-05 00:00 (Europe/Madrid) - Context file initialization
   - User intent: Create a top-level file that future conversations can inspect quickly and include a timeline log of conversations.
   - Actions taken: Created `000_START_HERE_CONTEXT.md` at `/home/capstone15` with project-context sections and timeline format.
@@ -499,9 +540,22 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
   - Next session should start with: Execute a full realistic campaign (balanced pilot or higher budgets) and compare realistic-query degradation against legacy surrogate/SHAP results for thesis interpretation.
 
 ## Session Summary (Most Recent)
-- Date: 2026-03-08 (Europe/Berlin)
-- Summary: Implemented realistic robustness v2 in `scripts/evaluate_xgb_robustness.py` while preserving legacy outputs: new query-limited black-box attacks for malicious evasion and benign-side FPR drift, protocol relation constraints (`Min<=AVG<=Max`, ratio-band constraints), local perturbation caps, realistic campaign sampling/budgets, dedicated query artifacts (`robustness_query_metrics_global/protocol.csv`, `realism_profile.json`, `query_trace_summary.json`), and progress/ETA logs through long loops. Added GPU inference control (`--xgb-device`) with auto fallback and switched `scripts/evaluate_xgb_robustness.sbatch` to GPU defaults. Validated via realistic smoke run and deterministic rerun with matching query metric artifacts for fixed seed.
-- Immediate next action: Launch a full realistic run (higher budgets/sample caps) and produce interpretation comparing realistic query attacks vs legacy surrogate/SHAP robustness degradation.
+- Date: 2026-03-09 (Europe/Berlin)
+- Summary: Confirmed and interpreted completed realistic robustness outputs at `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054`. Under query-limited malicious evasion, degradation is minimal (global `delta_f1` around `-0.0006` at `epsilon=0.1`), but benign-side perturbations produce substantial FPR drift (global `fpr=0.2329` at `epsilon=0.1`), concentrated in WiFi (`wifi fpr=0.4658` at `epsilon=0.1`).
+- Immediate next action: Implement and run WiFi-focused hardening (adversarial benign augmentation + threshold recalibration), then re-evaluate with the same realistic query budgets.
+
+## Missing Context Backfill (2026-03-09)
+- Confirmed canonical realistic run directory: `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054`.
+- Confirmed key query metrics files to use for thesis conclusions:
+  - `robustness_query_metrics_global.csv`
+  - `robustness_query_metrics_protocol.csv`
+  - `query_trace_summary.json`
+  - `realism_profile.json`
+- Confirmed unresolved evaluation gap: `mqtt` has no benign rows in the test split, so benign-side FPR robustness for `mqtt` is `not_available` and must not be inferred.
+- Confirmed attack asymmetry finding:
+  - Malicious-evasion query attack currently has low success under constraints/budgets.
+  - Benign-side query attack can substantially increase false positives (especially WiFi).
+- Confirmed operational gap still missing from docs: one stable "submit remotely from Windows + fetch outputs back" runbook with exact repository path discovery and `scp` commands.
 ## Session Update (2026-03-07, MIoT IDS Prototype refinements)
 
 - React UI title changed to `MIoT IDS Prototype`.

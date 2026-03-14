@@ -1,0 +1,2 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+val_wifi_mlp,0.1,WiFI_and_MQTT/profiling/CSV/Idle.pcap.csv,20630,-0.029473960399627686,0.014536187052726746,48,5,25.88549464544553,22.457778930664062

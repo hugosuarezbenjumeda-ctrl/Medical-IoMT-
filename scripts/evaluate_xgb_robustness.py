@@ -9,7 +9,7 @@ import math
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -174,6 +174,49 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=3,
         help="Max mutable feature count perturbed per hillclimb step (sparse updates).",
+    )
+    parser.add_argument(
+        "--query-score-batch-rows",
+        type=int,
+        default=64,
+        help="Rows processed together in each hillclimb scoring batch (larger improves GPU utilization).",
+    )
+    parser.add_argument(
+        "--query-max-active-rows-per-step",
+        type=int,
+        default=0,
+        help="Optional cap on active rows processed per hillclimb step (<=0 disables cap).",
+    )
+    parser.add_argument(
+        "--query-stagnation-patience",
+        type=int,
+        default=0,
+        help="Optional early-stop patience in hillclimb steps when margin improvement is below threshold (<=0 disables).",
+    )
+    parser.add_argument(
+        "--query-stagnation-min-delta",
+        type=float,
+        default=1e-6,
+        help="Minimum per-step best-margin improvement to reset hillclimb stagnation counter.",
+    )
+    parser.add_argument(
+        "--query-fast-projection",
+        dest="query_fast_projection",
+        action="store_true",
+        default=True,
+        help="Enable fast batched proposal projection with top-k full-refine scoring (reduces CPU bottleneck).",
+    )
+    parser.add_argument(
+        "--no-query-fast-projection",
+        dest="query_fast_projection",
+        action="store_false",
+        help="Disable fast batched projection path and use full projection on all candidates.",
+    )
+    parser.add_argument(
+        "--query-refine-topk",
+        type=int,
+        default=2,
+        help="Number of top fast-projected candidates per row to fully project+rescore.",
     )
     parser.add_argument(
         "--relative-cap-default",
@@ -1517,6 +1560,30 @@ def project_realistic_row(
     return x0.astype(np.float32, copy=True)
 
 
+def project_realistic_candidates_fast(
+    x_candidates: np.ndarray,
+    x_orig: np.ndarray,
+    profile: Dict[str, Any],
+    epsilon: float,
+) -> np.ndarray:
+    if x_candidates.size == 0:
+        return np.empty((0, x_orig.shape[0]), dtype=np.float32)
+    x = x_candidates.astype(np.float64, copy=True)
+    x0 = x_orig.astype(np.float64, copy=False)
+    lower = profile["lower"]
+    upper = profile["upper"]
+    locked_idx = profile["locked_idx"]
+    max_delta = compute_row_max_delta(x0, profile, epsilon).astype(np.float64, copy=False)
+
+    np.clip(x, lower[None, :], upper[None, :], out=x)
+    delta = x - x0[None, :]
+    np.clip(delta, -max_delta[None, :], max_delta[None, :], out=delta)
+    x = x0[None, :] + delta
+    if locked_idx.size > 0:
+        x[:, locked_idx] = x0[locked_idx][None, :]
+    return x.astype(np.float32, copy=False)
+
+
 def summarize_realistic_violations(
     x_adv: np.ndarray,
     x_orig: np.ndarray,
@@ -1580,8 +1647,13 @@ def summarize_realistic_violations(
 def score_margin_batch(booster: xgb.Booster, x_batch: np.ndarray, threshold: float) -> np.ndarray:
     if x_batch.size == 0:
         return np.empty(0, dtype=np.float64)
-    score = booster.predict(xgb.DMatrix(x_batch.astype(np.float32, copy=False))).astype(np.float64, copy=False)
-    return score - float(threshold)
+    x32 = x_batch.astype(np.float32, copy=False)
+    try:
+        score = booster.inplace_predict(x32, validate_features=False)
+        score_arr = np.asarray(score, dtype=np.float64)
+    except Exception:
+        score_arr = booster.predict(xgb.DMatrix(x32)).astype(np.float64, copy=False)
+    return score_arr - float(threshold)
 
 
 def propose_sparse_candidates(
@@ -1621,7 +1693,7 @@ def propose_sparse_candidates(
 def run_query_sparse_hillclimb(
     x_orig: np.ndarray,
     baseline_margin: np.ndarray,
-    booster: xgb.Booster,
+    booster: Optional[xgb.Booster],
     threshold: float,
     profile: Dict[str, Any],
     epsilon: float,
@@ -1633,12 +1705,20 @@ def run_query_sparse_hillclimb(
     rng: np.random.Generator,
     progress_prefix: str,
     start_ts: float,
+    score_margin_fn: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+    score_batch_rows: int = 64,
+    max_active_rows_per_step: Optional[int] = None,
+    stagnation_patience: Optional[int] = None,
+    stagnation_min_delta: float = 1e-6,
+    fast_projection: bool = True,
+    refine_topk: int = 2,
 ) -> Dict[str, Any]:
     n_rows = int(x_orig.shape[0])
+    x_orig_f64 = x_orig.astype(np.float64, copy=False)
+    x_cur = x_orig_f64.copy()
     x_adv = x_orig.astype(np.float32, copy=True)
     queries_used = np.zeros(n_rows, dtype=np.int32)
     accepted_moves = np.zeros(n_rows, dtype=np.int32)
-    success = np.zeros(n_rows, dtype=bool)
     final_margin = baseline_margin.astype(np.float64, copy=True)
 
     n_budget = max(0, int(query_budget))
@@ -1646,7 +1726,33 @@ def run_query_sparse_hillclimb(
     n_candidates = max(1, int(candidates_per_step))
     subset_size = max(1, int(feature_subset_size))
     mutable_idx = profile["mutable_idx"]
+    locked_idx = profile["locked_idx"]
+    span = profile["span"].astype(np.float64, copy=False)
+    relative_caps = profile["relative_caps"].astype(np.float64, copy=False)
+    row_batch_size = max(1, int(score_batch_rows))
+    active_cap = int(max_active_rows_per_step) if max_active_rows_per_step is not None else 0
+    if active_cap <= 0:
+        active_cap = 0
+    stagnation_pat = int(stagnation_patience) if stagnation_patience is not None else 0
+    if stagnation_pat <= 0:
+        stagnation_pat = 0
+    min_delta = max(0.0, float(stagnation_min_delta))
+    use_fast_projection = bool(fast_projection)
+    refine_k = max(1, int(refine_topk))
     tol = 1e-9
+    if score_margin_fn is None and booster is None:
+        raise ValueError("run_query_sparse_hillclimb requires either booster or score_margin_fn.")
+
+    def _score_margin_local(x_batch: np.ndarray) -> np.ndarray:
+        if score_margin_fn is not None:
+            return np.asarray(score_margin_fn(x_batch.astype(np.float32, copy=False)), dtype=np.float64)
+        assert booster is not None
+        return score_margin_batch(booster, x_batch, threshold=threshold)
+
+    if objective == "minimize":
+        success = final_margin < 0.0
+    else:
+        success = final_margin >= 0.0
 
     if n_rows == 0:
         return {
@@ -1663,101 +1769,270 @@ def run_query_sparse_hillclimb(
                 "queries_mean": float("nan"),
                 "queries_p95": float("nan"),
                 "accepted_moves_mean": float("nan"),
+                "steps_executed": 0,
+                "steps_with_progress": 0,
+                "active_rows_total": 0,
+                "active_rows_mean_per_step": float("nan"),
+                "active_rows_p95_per_step": float("nan"),
+                "active_rows_max_per_step": 0,
+                "max_active_rows_per_step": int(active_cap),
+                "stagnation_patience": int(stagnation_pat),
+                "stagnation_min_delta": float(min_delta),
+                "stagnation_steps": 0,
+                "stagnation_triggered": False,
+                "fast_projection": bool(use_fast_projection),
+                "refine_topk": int(refine_k),
+                "fast_projection_rows": 0,
+                "full_projection_rows": 0,
+                "fast_refine_candidates_scored": 0,
+                "full_projection_candidates": 0,
             },
         }
 
+    row_max_delta = np.minimum(
+        max(0.0, float(epsilon)) * span.reshape(1, -1),
+        relative_caps.reshape(1, -1) * np.maximum(np.abs(x_orig_f64), 1.0),
+    ).astype(np.float64, copy=False)
+    if locked_idx.size > 0:
+        row_max_delta[:, locked_idx] = 0.0
+
     progress_every = max(50, min(500, n_rows // 10 if n_rows >= 10 else 50))
     loop_start = time.time()
-    for i in range(n_rows):
-        x0 = x_orig[i].astype(np.float64, copy=False)
-        x_cur = x0.copy()
-        q = 0
-        accepted = 0
-
-        x_cur = project_realistic_row(
-            x_candidate=x_cur,
-            x_orig=x0,
-            x_reference_valid=x0,
-            profile=profile,
-            epsilon=float(epsilon),
-        ).astype(np.float64, copy=False)
-        if np.max(np.abs(x_cur - x0)) > 1e-12:
-            margin_cur = float(score_margin_batch(booster, x_cur.reshape(1, -1), threshold=threshold)[0])
-            q += 1
-        else:
-            margin_cur = float(baseline_margin[i])
-
-        if objective == "minimize":
-            is_success = bool(margin_cur < 0.0)
-        else:
-            is_success = bool(margin_cur >= 0.0)
-
-        if epsilon > 0.0 and n_budget > 0 and mutable_idx.size > 0:
-            row_max_delta = compute_row_max_delta(x0, profile=profile, epsilon=float(epsilon))
-            for _ in range(n_steps):
-                if is_success or q >= n_budget:
-                    break
-                k_candidates = min(n_candidates, n_budget - q)
-                if k_candidates <= 0:
-                    break
-
-                proposals = propose_sparse_candidates(
-                    x_current=x_cur,
-                    max_delta_row=row_max_delta,
-                    mutable_idx=mutable_idx,
-                    n_candidates=k_candidates,
-                    subset_size=subset_size,
-                    objective=objective,
-                    rng=rng,
-                )
-                for c in range(k_candidates):
-                    proposals[c] = project_realistic_row(
-                        x_candidate=proposals[c],
-                        x_orig=x0,
-                        x_reference_valid=x_cur,
-                        profile=profile,
-                        epsilon=float(epsilon),
-                    )
-
-                margins = score_margin_batch(booster, proposals.astype(np.float32, copy=False), threshold=threshold)
-                q += int(k_candidates)
+    done_prev = -1
+    steps_executed = 0
+    steps_with_progress = 0
+    stagnation_steps = 0
+    stagnation_triggered = False
+    fast_projection_rows = 0
+    full_projection_rows = 0
+    fast_refine_candidates_scored = 0
+    full_projection_candidates = 0
+    active_rows_by_step: List[int] = []
+    if epsilon > 0.0 and n_budget > 0 and mutable_idx.size > 0:
+        for _ in range(n_steps):
+            active_full = np.flatnonzero((~success) & (queries_used < n_budget))
+            if active_full.size <= 0:
+                break
+            steps_executed += 1
+            if active_cap > 0 and int(active_full.size) > active_cap:
+                active_scores = final_margin[active_full]
                 if objective == "minimize":
-                    best_idx = int(np.argmin(margins))
-                    best_margin = float(margins[best_idx])
-                    improved = bool(best_margin < (margin_cur - tol))
+                    order = np.argsort(active_scores)[::-1]
                 else:
-                    best_idx = int(np.argmax(margins))
-                    best_margin = float(margins[best_idx])
-                    improved = bool(best_margin > (margin_cur + tol))
+                    order = np.argsort(active_scores)
+                active = active_full[order[:active_cap]]
+            else:
+                active = active_full
+            active_rows_by_step.append(int(active.size))
+            if active.size <= 0:
+                continue
 
-                if improved:
-                    x_cur = proposals[best_idx].astype(np.float64, copy=False)
-                    margin_cur = best_margin
-                    accepted += 1
-                    if objective == "minimize":
-                        is_success = bool(margin_cur < 0.0)
+            if objective == "minimize":
+                step_best_before = float(np.min(final_margin[active]))
+            else:
+                step_best_before = float(np.max(final_margin[active]))
+
+            for chunk_start in range(0, int(active.size), row_batch_size):
+                chunk_rows = active[chunk_start : chunk_start + row_batch_size]
+                staged_rows: List[Dict[str, Any]] = []
+                stacked_blocks: List[np.ndarray] = []
+
+                for row_i_raw in chunk_rows.tolist():
+                    row_i = int(row_i_raw)
+                    remaining = int(n_budget - int(queries_used[row_i]))
+                    if remaining <= 0:
+                        continue
+                    reserve_refine = 0
+                    if use_fast_projection and remaining > 2 and int(n_candidates) > 1:
+                        reserve_refine = min(int(refine_k), remaining - 1)
+                    if reserve_refine > 0:
+                        k_candidates = min(int(n_candidates), max(1, remaining - reserve_refine))
                     else:
-                        is_success = bool(margin_cur >= 0.0)
+                        k_candidates = min(int(n_candidates), remaining)
+                    if k_candidates <= 1:
+                        reserve_refine = 0
+                        k_candidates = min(int(n_candidates), remaining)
+                    if k_candidates <= 0:
+                        continue
 
-        x_adv[i] = x_cur.astype(np.float32, copy=False)
-        queries_used[i] = int(q)
-        accepted_moves[i] = int(accepted)
-        success[i] = bool(is_success)
-        final_margin[i] = float(margin_cur)
+                    proposals = propose_sparse_candidates(
+                        x_current=x_cur[row_i],
+                        max_delta_row=row_max_delta[row_i],
+                        mutable_idx=mutable_idx,
+                        n_candidates=k_candidates,
+                        subset_size=subset_size,
+                        objective=objective,
+                        rng=rng,
+                    )
+                    x0 = x_orig_f64[row_i]
+                    x_ref = x_cur[row_i].copy()
+                    if reserve_refine > 0:
+                        proposals_fast = project_realistic_candidates_fast(
+                            x_candidates=proposals,
+                            x_orig=x0,
+                            profile=profile,
+                            epsilon=float(epsilon),
+                        ).astype(np.float32, copy=False)
+                        fast_projection_rows += 1
+                        staged_rows.append(
+                            {
+                                "row_i": int(row_i),
+                                "proposals": proposals_fast,
+                                "x0": x0,
+                                "x_ref": x_ref,
+                                "refine_topk": int(reserve_refine),
+                            }
+                        )
+                        stacked_blocks.append(proposals_fast)
+                    else:
+                        for c in range(k_candidates):
+                            proposals[c] = project_realistic_row(
+                                x_candidate=proposals[c],
+                                x_orig=x0,
+                                x_reference_valid=x_ref,
+                                profile=profile,
+                                epsilon=float(epsilon),
+                            )
+                        proposals_full = proposals.astype(np.float32, copy=False)
+                        full_projection_rows += 1
+                        full_projection_candidates += int(k_candidates)
+                        staged_rows.append(
+                            {
+                                "row_i": int(row_i),
+                                "proposals": proposals_full,
+                                "x0": x0,
+                                "x_ref": x_ref,
+                                "refine_topk": 0,
+                            }
+                        )
+                        stacked_blocks.append(proposals_full)
 
-        done = i + 1
-        if done % progress_every == 0 or done == n_rows:
-            elapsed = time.time() - loop_start
-            mean_queries = float(np.mean(queries_used[:done]))
-            success_rate = float(np.mean(success[:done].astype(np.float64)))
-            eta_s = (elapsed / max(1, done)) * max(0, n_rows - done)
-            log_progress(
-                (
-                    f"{progress_prefix}: {done}/{n_rows} samples, "
-                    f"mean_queries={mean_queries:.1f}, success_rate={success_rate:.3f}, ETA~{eta_s/60.0:.1f} min"
-                ),
-                start_ts=start_ts,
-            )
+                if not staged_rows:
+                    continue
+
+                stacked = np.vstack(stacked_blocks).astype(np.float32, copy=False)
+                margins_all = _score_margin_local(stacked)
+                offset = 0
+                for staged in staged_rows:
+                    row_i = int(staged["row_i"])
+                    proposals = np.asarray(staged["proposals"], dtype=np.float32)
+                    k_candidates = int(proposals.shape[0])
+                    row_margins = margins_all[offset : offset + k_candidates]
+                    offset += k_candidates
+                    used_queries = int(k_candidates)
+
+                    refine_cnt = int(staged.get("refine_topk", 0))
+                    if refine_cnt > 0 and k_candidates > 0:
+                        refine_cnt = int(min(refine_cnt, k_candidates))
+                        if objective == "minimize":
+                            if refine_cnt >= k_candidates:
+                                top_idx = np.arange(k_candidates, dtype=np.int64)
+                            else:
+                                top_idx = np.argpartition(row_margins, refine_cnt - 1)[:refine_cnt]
+                            top_idx = top_idx[np.argsort(row_margins[top_idx])]
+                        else:
+                            if refine_cnt >= k_candidates:
+                                top_idx = np.arange(k_candidates, dtype=np.int64)
+                            else:
+                                top_idx = np.argpartition(row_margins, -refine_cnt)[-refine_cnt:]
+                            top_idx = top_idx[np.argsort(row_margins[top_idx])[::-1]]
+
+                        refined_blocks: List[np.ndarray] = []
+                        x0 = np.asarray(staged["x0"], dtype=np.float64)
+                        x_ref = np.asarray(staged["x_ref"], dtype=np.float64)
+                        for idx_local in top_idx.tolist():
+                            refined_blocks.append(
+                                project_realistic_row(
+                                    x_candidate=proposals[int(idx_local)],
+                                    x_orig=x0,
+                                    x_reference_valid=x_ref,
+                                    profile=profile,
+                                    epsilon=float(epsilon),
+                                )
+                            )
+                        refined_stack = np.vstack(refined_blocks).astype(np.float32, copy=False)
+                        refined_margins = _score_margin_local(refined_stack)
+                        fast_refine_candidates_scored += int(refined_stack.shape[0])
+                        used_queries += int(refined_stack.shape[0])
+                        proposals_eval = refined_stack
+                        row_margins_eval = np.asarray(refined_margins, dtype=np.float64)
+                    else:
+                        proposals_eval = proposals
+                        row_margins_eval = np.asarray(row_margins, dtype=np.float64)
+
+                    queries_used[row_i] = int(queries_used[row_i] + used_queries)
+
+                    margin_cur = float(final_margin[row_i])
+                    if objective == "minimize":
+                        best_idx = int(np.argmin(row_margins_eval))
+                        best_margin = float(row_margins_eval[best_idx])
+                        improved = bool(best_margin < (margin_cur - tol))
+                    else:
+                        best_idx = int(np.argmax(row_margins_eval))
+                        best_margin = float(row_margins_eval[best_idx])
+                        improved = bool(best_margin > (margin_cur + tol))
+
+                    if improved:
+                        x_cur[row_i] = proposals_eval[best_idx].astype(np.float64, copy=False)
+                        final_margin[row_i] = float(best_margin)
+                        accepted_moves[row_i] = int(accepted_moves[row_i] + 1)
+                        if objective == "minimize":
+                            success[row_i] = bool(best_margin < 0.0)
+                        else:
+                            success[row_i] = bool(best_margin >= 0.0)
+
+            if objective == "minimize":
+                step_best_after = float(np.min(final_margin[active]))
+                step_improvement = max(0.0, step_best_before - step_best_after)
+            else:
+                step_best_after = float(np.max(final_margin[active]))
+                step_improvement = max(0.0, step_best_after - step_best_before)
+
+            if step_improvement > min_delta:
+                steps_with_progress += 1
+                stagnation_steps = 0
+            else:
+                stagnation_steps += 1
+                if stagnation_pat > 0 and stagnation_steps >= stagnation_pat:
+                    stagnation_triggered = True
+                    break
+
+            done_now = int(np.sum(success | (queries_used >= n_budget)))
+            if (
+                done_now == n_rows
+                or done_now - done_prev >= progress_every
+                or (done_prev < 0 and done_now > 0)
+            ):
+                elapsed = time.time() - loop_start
+                mean_queries = float(np.mean(queries_used.astype(np.float64)))
+                success_rate = float(np.mean(success.astype(np.float64)))
+                eta_s = (elapsed / max(1, done_now)) * max(0, n_rows - done_now)
+                log_progress(
+                    (
+                        f"{progress_prefix}: {done_now}/{n_rows} samples, "
+                        f"mean_queries={mean_queries:.1f}, success_rate={success_rate:.3f}, ETA~{eta_s/60.0:.1f} min"
+                    ),
+                    start_ts=start_ts,
+                )
+                done_prev = done_now
+            if stagnation_triggered:
+                break
+
+    x_adv[:] = x_cur.astype(np.float32, copy=False)
+
+    done_final = int(np.sum(success | (queries_used >= n_budget)))
+    if done_final != done_prev:
+        elapsed = time.time() - loop_start
+        mean_queries = float(np.mean(queries_used.astype(np.float64)))
+        success_rate = float(np.mean(success.astype(np.float64)))
+        eta_s = (elapsed / max(1, done_final)) * max(0, n_rows - done_final)
+        log_progress(
+            (
+                f"{progress_prefix}: {done_final}/{n_rows} samples, "
+                f"mean_queries={mean_queries:.1f}, success_rate={success_rate:.3f}, ETA~{eta_s/60.0:.1f} min"
+            ),
+            start_ts=start_ts,
+        )
 
     summary = {
         "samples": int(n_rows),
@@ -1767,6 +2042,29 @@ def run_query_sparse_hillclimb(
         "queries_mean": float(np.mean(queries_used.astype(np.float64))) if n_rows > 0 else float("nan"),
         "queries_p95": float(np.percentile(queries_used.astype(np.float64), 95.0)) if n_rows > 0 else float("nan"),
         "accepted_moves_mean": float(np.mean(accepted_moves.astype(np.float64))) if n_rows > 0 else float("nan"),
+        "steps_executed": int(steps_executed),
+        "steps_with_progress": int(steps_with_progress),
+        "active_rows_total": int(np.sum(active_rows_by_step, dtype=np.int64)) if active_rows_by_step else 0,
+        "active_rows_mean_per_step": (
+            float(np.mean(np.asarray(active_rows_by_step, dtype=np.float64))) if active_rows_by_step else float("nan")
+        ),
+        "active_rows_p95_per_step": (
+            float(np.percentile(np.asarray(active_rows_by_step, dtype=np.float64), 95.0))
+            if active_rows_by_step
+            else float("nan")
+        ),
+        "active_rows_max_per_step": int(max(active_rows_by_step)) if active_rows_by_step else 0,
+        "max_active_rows_per_step": int(active_cap),
+        "stagnation_patience": int(stagnation_pat),
+        "stagnation_min_delta": float(min_delta),
+        "stagnation_steps": int(stagnation_steps),
+        "stagnation_triggered": bool(stagnation_triggered),
+        "fast_projection": bool(use_fast_projection),
+        "refine_topk": int(refine_k),
+        "fast_projection_rows": int(fast_projection_rows),
+        "full_projection_rows": int(full_projection_rows),
+        "fast_refine_candidates_scored": int(fast_refine_candidates_scored),
+        "full_projection_candidates": int(full_projection_candidates),
     }
     return {
         "x_adv": x_adv,
@@ -2011,6 +2309,9 @@ def main() -> None:
             "query_max_steps": int(args.query_max_steps),
             "query_candidates_per_step": int(args.query_candidates_per_step),
             "query_feature_subset_size": int(args.query_feature_subset_size),
+            "query_score_batch_rows": int(args.query_score_batch_rows),
+            "query_fast_projection": bool(args.query_fast_projection),
+            "query_refine_topk": int(args.query_refine_topk),
             "relation_quantile_low": float(relation_q_low),
             "relation_quantile_high": float(relation_q_high),
             "epsilons": [float(e) for e in epsilons],
@@ -2536,6 +2837,20 @@ def main() -> None:
                         max_steps=int(args.query_max_steps),
                         candidates_per_step=int(args.query_candidates_per_step),
                         feature_subset_size=int(args.query_feature_subset_size),
+                        score_batch_rows=int(args.query_score_batch_rows),
+                        max_active_rows_per_step=(
+                            int(args.query_max_active_rows_per_step)
+                            if int(args.query_max_active_rows_per_step) > 0
+                            else None
+                        ),
+                        stagnation_patience=(
+                            int(args.query_stagnation_patience)
+                            if int(args.query_stagnation_patience) > 0
+                            else None
+                        ),
+                        stagnation_min_delta=float(args.query_stagnation_min_delta),
+                        fast_projection=bool(args.query_fast_projection),
+                        refine_topk=max(1, int(args.query_refine_topk)),
                         rng=rng,
                         progress_prefix=f"{query_method}[{proto}] eps={epsilon}",
                         start_ts=start_ts,

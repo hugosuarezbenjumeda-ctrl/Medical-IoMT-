@@ -1,0 +1,41 @@
+{
+  "protocol": "mqtt",
+  "model_name": "xgboost",
+  "family_id": "C",
+  "family_name": "recall_priority_control",
+  "family_description": "current_hardening_control",
+  "seed": 42,
+  "num_gate_pass": 99,
+  "gate_pass": 1,
+  "gate_failure_category": "none",
+  "gate_clean_fpr": 1,
+  "gate_attacked_benign_fpr": 1,
+  "gate_adv_malicious_recall": 1,
+  "clean_fpr": 5.307714763408614e-05,
+  "attacked_benign_fpr": 0.0,
+  "adv_malicious_recall": 0.9993333333333333,
+  "clean_f1": 0.9992314695484589,
+  "robust_f1": 0.9996665555185061,
+  "warm_threshold": 0.9230769230847097,
+  "selected_threshold": 0.9915965204483941,
+  "warm_model_device": "cuda",
+  "robust_model_device": "cuda",
+  "hardneg_weight": 2.5,
+  "maladv_weight": 2.5,
+  "extra_topk_per_epsilon": 2500,
+  "n_aug_benign": 3607,
+  "n_aug_malicious": 4000,
+  "timing_seconds": {
+    "total": 35.54749274253845,
+    "warm_fit": 3.6311733722686768,
+    "attack_gen": 28.405157804489136,
+    "robust_fit": 3.2884323596954346,
+    "threshold_eval": 0.17793774604797363
+  },
+  "files": {
+    "candidate_dir": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_xgboost_C_seed_42",
+    "attack_stats_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_xgboost_C_seed_42/attack_stats.csv",
+    "attack_preview_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_xgboost_C_seed_42/attack_preview.csv",
+    "saved_model": ""
+  }
+}

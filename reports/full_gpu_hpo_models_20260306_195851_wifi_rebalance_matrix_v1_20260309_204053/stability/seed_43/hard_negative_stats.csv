@@ -1,0 +1,6 @@
+split,epsilon,targeted_rows,baseline_false_alarm_rows,attack_successes_any,flip_rows,flip_rate,selected_rows,selected_rate,selected_topk_added_rows,attacked_pred_attack_rate,queries_total,queries_mean,queries_p95,accepted_moves_mean,below_lower_violations,above_upper_violations,locked_change_rows,locked_change_max_abs,cap_violation_rows,relation_violation_rows,relation_min_avg_max_rows,relation_tot_num_avg_rows,relation_rate_rows,baseline_detected_rows,evasion_flip_rows,evasion_flip_rate,robust_recall_under_attack
+train_fpr_priority,0.05,12000,4.0,3244.0,3240.0,0.27,3240.0,0.27,0.0,0.2703333333333333,1151141,95.92841666666666,120.0,1.3891666666666667,0,0,0,0.0,2,0,0,0,0,,,,
+train_fpr_priority,0.1,12000,4.0,4649.0,4645.0,0.38708333333333333,4645.0,0.38708333333333333,0.0,0.3874166666666667,1020357,85.02975,120.0,1.4445,0,0,0,0.0,3,0,0,0,0,,,,
+val_fpr_priority,0.05,4000,1.0,140.0,139.0,0.03475,139.0,0.03475,0.0,0.035,466745,116.68625,120.0,0.1235,0,0,0,0.0,0,0,0,0,0,,,,
+val_fpr_priority,0.1,4000,1.0,203.0,202.0,0.0505,202.0,0.0505,0.0,0.05075,461103,115.27575,120.0,0.143,0,0,0,0.0,0,0,0,0,0,,,,
+val_fpr_priority,0.1,4000,,,,,,,,,476208,119.052,120.0,13.81575,0,0,0,0.0,337,0,0,0,0,3973.0,10.0,0.0025,0.99075

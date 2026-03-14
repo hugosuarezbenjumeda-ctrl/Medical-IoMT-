@@ -1,0 +1,5 @@
+split,epsilon,targeted_rows,baseline_false_alarm_rows,attack_successes_any,flip_rows,flip_rate,selected_rows,selected_rate,selected_topk_added_rows,attacked_pred_attack_rate,attack_source_mode,attack_source_detail,queries_total,queries_mean,queries_p95,accepted_moves_mean,below_lower_violations,above_upper_violations,locked_change_rows,locked_change_max_abs,cap_violation_rows,relation_violation_rows,relation_min_avg_max_rows,relation_tot_num_avg_rows,relation_rate_rows,baseline_detected_rows,evasion_flip_rows,evasion_flip_rate,robust_recall_under_attack
+train_bluetooth_xgboost_fpr_priority,0.1,93,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,fixed_xgb,fixed_xgb:bluetooth_base,744,8.0,8.0,0.0,0,0,0,0.0,0,0,0,0,0,,,,
+train_bluetooth_xgboost_fpr_priority,0.1,128,,,,,,,,,fixed_xgb,fixed_xgb:bluetooth_base,1000,7.8125,8.0,0.7265625,0,0,0,0.0,0,0,0,0,0,125.0,93.0,0.7265625,0.25
+val_bluetooth_xgboost,0.1,64,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,fixed_xgb,fixed_xgb:bluetooth_base,512,8.0,8.0,0.0,0,0,0,0.0,0,0,0,0,0,,,,
+val_bluetooth_xgboost,0.1,64,,,,,,,,,fixed_xgb,fixed_xgb:bluetooth_base,512,8.0,8.0,0.734375,0,0,0,0.0,0,0,0,0,0,64.0,47.0,0.734375,0.265625

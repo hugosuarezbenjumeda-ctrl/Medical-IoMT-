@@ -1,0 +1,10 @@
+{
+  "triggered": 1,
+  "reason": "stability_infeasible",
+  "recommendation": "stop_tuning_loop_move_to_representation_changes",
+  "protocol_hard_cap": {
+    "wifi": 0,
+    "mqtt": 0,
+    "bluetooth": 0
+  }
+}

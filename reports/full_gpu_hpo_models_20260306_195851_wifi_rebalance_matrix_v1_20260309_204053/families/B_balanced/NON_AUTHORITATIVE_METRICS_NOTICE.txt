@@ -1,0 +1,2 @@
+The copied metrics_summary*.json/csv files are inherited from base run for compatibility only.
+Use decision_table.csv and family_summary.json in matrix output as authoritative.

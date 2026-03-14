@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-03-10T10:53:41.545591",
+  "run_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248",
+  "top_global_candidates": [
+    {
+      "candidate_key": "xgboost__A__123",
+      "model_name": "xgboost",
+      "family_id": "A",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": true,
+      "gate_pass": false,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9958791208791208,
+      "mean_robust_f1": 0.984126984126984,
+      "final_rank": 1
+    },
+    {
+      "candidate_key": "xgboost__B__123",
+      "model_name": "xgboost",
+      "family_id": "B",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": true,
+      "gate_pass": false,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9929395557086276,
+      "mean_robust_f1": 0.984126984126984,
+      "final_rank": 2
+    },
+    {
+      "candidate_key": "xgboost__C__123",
+      "model_name": "xgboost",
+      "family_id": "C",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": true,
+      "gate_pass": false,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9929395557086276,
+      "mean_robust_f1": 0.984126984126984,
+      "final_rank": 3
+    }
+  ],
+  "stable_candidates": [],
+  "global_rows": 3,
+  "stability_rows": 0,
+  "consistency_rows": 0,
+  "escalation_recommendation": {
+    "triggered": 1,
+    "reason": "tuning_infeasible",
+    "recommendation": "stop_tuning_loop_move_to_representation_changes",
+    "protocol_hard_cap": {
+      "wifi": 1
+    }
+  }
+}

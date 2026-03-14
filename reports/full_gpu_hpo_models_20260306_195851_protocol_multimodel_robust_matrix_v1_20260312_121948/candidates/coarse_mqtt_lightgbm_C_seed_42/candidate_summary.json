@@ -1,0 +1,41 @@
+{
+  "protocol": "mqtt",
+  "model_name": "lightgbm",
+  "family_id": "C",
+  "family_name": "recall_priority_control",
+  "family_description": "current_hardening_control",
+  "seed": 42,
+  "num_gate_pass": 34,
+  "gate_pass": 1,
+  "gate_failure_category": "none",
+  "gate_clean_fpr": 1,
+  "gate_attacked_benign_fpr": 1,
+  "gate_adv_malicious_recall": 1,
+  "clean_fpr": 2.653857381704307e-05,
+  "attacked_benign_fpr": 0.0,
+  "adv_malicious_recall": 0.99,
+  "clean_f1": 0.9967641376367536,
+  "robust_f1": 0.9949748743718593,
+  "warm_threshold": 0.9498313088004078,
+  "selected_threshold": 0.8907478154564771,
+  "warm_model_device": "gpu",
+  "robust_model_device": "gpu",
+  "hardneg_weight": 2.5,
+  "maladv_weight": 2.5,
+  "extra_topk_per_epsilon": 2500,
+  "n_aug_benign": 3607,
+  "n_aug_malicious": 4000,
+  "timing_seconds": {
+    "total": 36.855894804000854,
+    "warm_fit": 4.038607358932495,
+    "attack_gen": 28.517072677612305,
+    "robust_fit": 4.145404100418091,
+    "threshold_eval": 0.10584568977355957
+  },
+  "files": {
+    "candidate_dir": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_lightgbm_C_seed_42",
+    "attack_stats_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_lightgbm_C_seed_42/attack_stats.csv",
+    "attack_preview_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_mqtt_lightgbm_C_seed_42/attack_preview.csv",
+    "saved_model": ""
+  }
+}

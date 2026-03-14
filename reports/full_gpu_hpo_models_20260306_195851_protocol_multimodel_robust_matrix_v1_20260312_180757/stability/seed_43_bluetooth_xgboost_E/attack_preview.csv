@@ -1,0 +1,7 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_bluetooth_xgboost_bluetooth_recovery_e,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,362,0.0017175078392028809,-0.0029691457748413086,64,7,18828.108035558285,18815.90625
+val_bluetooth_xgboost,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,429,0.00040453672409057617,-1.0132789611816406e-06,32,2,25.189168536720125,17.811431884765625
+val_bluetooth_xgboost,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,450,0.0017312169075012207,-1.0132789611816406e-06,32,2,23145.709411700485,23129.4765625
+val_bluetooth_xgboost,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,463,0.0017312169075012207,-1.0132789611816406e-06,64,2,10795.559587719323,10787.9453125
+val_bluetooth_xgboost,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,513,0.0017312169075012207,-0.0007640719413757324,64,7,21153.80735717798,21138.5859375
+val_bluetooth_xgboost,0.1,Bluetooth/attacks/csv/train/Bluetooth_DoS_train.pcap.csv,518,0.0017312169075012207,-1.0132789611816406e-06,32,3,22058.717966232874,22042.828125

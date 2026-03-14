@@ -1,0 +1,4 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_wifi_xgboost_balanced,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_WAN_WATCH.pcap.csv,1036,-0.22604026002591127,0.7254241406917572,4,3,8064361.056735349,8064336.0
+train_wifi_xgboost_balanced,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_WAN_WATCH.pcap.csv,129,-0.2162551125511527,0.06487405300140381,2,2,65.7891900259445,65.78912353515625
+train_wifi_xgboost_balanced,0.1,WiFI_and_MQTT/profiling/CSV/Active.pcap.csv,10131,-0.22097451612353325,0.011995360255241394,2,1,0.09860077500343323,0.09860077500343323

@@ -1,0 +1,9 @@
+seed,split_seed_used,candidate_key,candidate_group_key,model_name,family_id,global_gate_pass,worst_attacked_benign_fpr,worst_clean_fpr,worst_adv_malicious_recall,primary_fail_reason
+43,42,catboost__B__43,catboost__B,catboost,B,True,0.004,0.0014785608674223755,0.9903333333333333,none
+43,42,xgboost__E__43,xgboost__E,xgboost,E,False,0.9726666666666667,0.9760098702248218,0.99,fpr_only
+44,42,xgboost__E__44,xgboost__E,xgboost,E,False,0.005421389847215377,0.0009857072449482504,0.99,fpr_only
+44,42,catboost__B__44,catboost__B,catboost,B,False,0.9203333333333333,0.9172911716322427,0.99,fpr_only
+45,42,catboost__B__45,catboost__B,catboost,B,False,0.010666666666666666,0.00039807860725564606,0.99,fpr_only
+45,42,xgboost__E__45,xgboost__E,xgboost,E,False,0.92,0.9155547431913726,0.99,fpr_only
+46,42,catboost__B__46,catboost__B,catboost,B,False,0.8423333333333334,0.8445896545421312,0.99,fpr_only
+46,42,xgboost__E__46,xgboost__E,xgboost,E,False,0.9743333333333334,0.9745933101809541,0.99,fpr_only

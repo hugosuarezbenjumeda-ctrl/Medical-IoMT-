@@ -1,0 +1,41 @@
+{
+  "protocol": "wifi",
+  "model_name": "mlp",
+  "family_id": "B",
+  "family_name": "balanced",
+  "family_description": "strict_flips_limited_near_miss_moderate_weight",
+  "seed": 42,
+  "num_gate_pass": 24,
+  "gate_pass": 1,
+  "gate_failure_category": "none",
+  "gate_clean_fpr": 1,
+  "gate_attacked_benign_fpr": 1,
+  "gate_adv_malicious_recall": 1,
+  "clean_fpr": 0.001971414489896501,
+  "attacked_benign_fpr": 0.0026666666666666666,
+  "adv_malicious_recall": 0.99,
+  "clean_f1": 0.993624243362889,
+  "robust_f1": 0.9936433589829374,
+  "warm_threshold": 0.2107023423609944,
+  "selected_threshold": 0.8991596638686794,
+  "warm_model_device": "cuda",
+  "robust_model_device": "cuda",
+  "hardneg_weight": 2.0,
+  "maladv_weight": 2.0,
+  "extra_topk_per_epsilon": 500,
+  "n_aug_benign": 1617,
+  "n_aug_malicious": 4000,
+  "timing_seconds": {
+    "total": 42.25045371055603,
+    "warm_fit": 8.031747817993164,
+    "attack_gen": 26.081758499145508,
+    "robust_fit": 8.026087522506714,
+    "threshold_eval": 0.0753777027130127
+  },
+  "files": {
+    "candidate_dir": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_mlp_B_seed_42",
+    "attack_stats_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_mlp_B_seed_42/attack_stats.csv",
+    "attack_preview_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_mlp_B_seed_42/attack_preview.csv",
+    "saved_model": ""
+  }
+}

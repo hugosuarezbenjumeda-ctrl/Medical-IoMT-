@@ -1,0 +1,11 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_WAN_WATCH.pcap.csv,12,-0.02952025830745697,0.010647550225257874,48,4,16821216.00009683,16821216.0
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,130303,-0.031980231404304504,0.029618829488754272,48,4,31.513962417415325,31.50244140625
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_LAN_WATCH.pcap.csv,505,-0.01944659650325775,0.014864057302474976,48,4,3.4944891302475085,3.2309722900390625
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,177002,-0.01519109308719635,0.017111510038375854,24,3,3.2602168022405187,3.2445602416992188
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,54933,-0.030490070581436157,0.009157046675682068,48,2,16578352.0,16578352.0
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,8754,-0.01803852617740631,0.01710832118988037,24,3,14.024103335068904,10.644256591796875
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_WAN_WATCH.pcap.csv,960,-0.03517904877662659,0.005792587995529175,48,5,14298640.000002254,14298640.0
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,110696,-0.012226894497871399,0.007034316658973694,24,2,4.486593044741922,4.486335754394531
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,132621,-0.029071196913719177,0.011071503162384033,48,4,16879488.000015713,16879488.0
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/profiling/CSV/Active.pcap.csv,12239,-0.030069395899772644,0.0031023025512695312,48,5,15936288.000008425,15936288.0

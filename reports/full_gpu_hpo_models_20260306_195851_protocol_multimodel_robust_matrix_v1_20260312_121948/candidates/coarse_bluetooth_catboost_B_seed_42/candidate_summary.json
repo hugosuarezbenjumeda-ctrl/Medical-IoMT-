@@ -1,0 +1,41 @@
+{
+  "protocol": "bluetooth",
+  "model_name": "catboost",
+  "family_id": "B",
+  "family_name": "balanced",
+  "family_description": "strict_flips_limited_near_miss_moderate_weight",
+  "seed": 42,
+  "num_gate_pass": 0,
+  "gate_pass": 0,
+  "gate_failure_category": "adv_recall_only",
+  "gate_clean_fpr": 1,
+  "gate_attacked_benign_fpr": 1,
+  "gate_adv_malicious_recall": 0,
+  "clean_fpr": 0.0,
+  "attacked_benign_fpr": 0.0,
+  "adv_malicious_recall": 0.7926666666666666,
+  "clean_f1": 0.9029776947588177,
+  "robust_f1": 0.8843436221643733,
+  "warm_threshold": 0.9999988656975359,
+  "selected_threshold": 0.9999988656975359,
+  "warm_model_device": "cuda",
+  "robust_model_device": "cuda",
+  "hardneg_weight": 2.0,
+  "maladv_weight": 2.0,
+  "extra_topk_per_epsilon": 500,
+  "n_aug_benign": 500,
+  "n_aug_malicious": 4000,
+  "timing_seconds": {
+    "total": 113.88585329055786,
+    "warm_fit": 49.01963663101196,
+    "attack_gen": 15.136555433273315,
+    "robust_fit": 49.553080558776855,
+    "threshold_eval": 0.12230372428894043
+  },
+  "files": {
+    "candidate_dir": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_bluetooth_catboost_B_seed_42",
+    "attack_stats_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_bluetooth_catboost_B_seed_42/attack_stats.csv",
+    "attack_preview_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_bluetooth_catboost_B_seed_42/attack_preview.csv",
+    "saved_model": ""
+  }
+}

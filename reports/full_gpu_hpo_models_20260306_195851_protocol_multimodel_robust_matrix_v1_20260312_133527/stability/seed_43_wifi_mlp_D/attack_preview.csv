@@ -1,0 +1,5 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+val_wifi_mlp,0.1,WiFI_and_MQTT/profiling/CSV/Owltron_Camera_LAN_WATCH.pcap.csv,2253,-0.03183826804161072,0.021056458353996277,48,3,47.68064873306607,47.637298583984375
+val_wifi_mlp,0.1,WiFI_and_MQTT/profiling/CSV/Owltron_Camera_WAN_WATCH.pcap.csv,2,-0.027663663029670715,0.010715141892433167,48,7,103536.0065318044,103536.0
+val_wifi_mlp,0.1,WiFI_and_MQTT/profiling/CSV/Idle.pcap.csv,13711,-0.02642853558063507,0.008158966898918152,48,5,8288.492263379441,8288.4921875
+val_wifi_mlp,0.1,WiFI_and_MQTT/profiling/CSV/Owltron_Camera_LAN_WATCH.pcap.csv,2259,-0.03518189489841461,0.00241832435131073,48,10,16.409451363368074,13.756591796875

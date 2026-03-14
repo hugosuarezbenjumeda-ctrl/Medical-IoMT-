@@ -1,0 +1,6 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_wifi_mlp_bluetooth_recovery_d,0.1,WiFI_and_MQTT/profiling/CSV/M1T_Camera_WAN_WATCH.pcap.csv,12,-0.03794753551483154,0.0026154667139053345,48,4,13998464.003617808,13998464.0
+train_wifi_mlp_bluetooth_recovery_d,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,34064,-0.025259628891944885,0.011140018701553345,48,8,26.499379997711006,23.168304443359375
+train_wifi_mlp_bluetooth_recovery_d,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,171,-0.025410667061805725,0.013691931962966919,48,7,25.92322711167344,24.8487548828125
+train_wifi_mlp_bluetooth_recovery_d,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,94634,-0.012416213750839233,0.017453104257583618,24,1,0.09018828719854355,0.09018828719854355
+train_wifi_mlp_bluetooth_recovery_d,0.1,WiFI_and_MQTT/attacks/csv/train/Benign_train.pcap.csv,132621,-0.0389149934053421,0.0022348612546920776,48,3,11063840.000013206,11063840.0

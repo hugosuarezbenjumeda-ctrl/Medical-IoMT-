@@ -1,0 +1,2 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_fpr_priority,0.1,WiFI_and_MQTT/profiling/CSV/Active.pcap.csv,71800,-0.22599317706772126,0.7453358471393585,2,2,7463840.00039427,7463840.0

@@ -1,0 +1,2 @@
+split,epsilon,source_relpath,source_row_index,baseline_margin,adv_margin,queries_used,l0,l2,linf
+train_wifi_mlp_balanced,0.1,WiFI_and_MQTT/profiling/CSV/Owltron_Camera_WAN_MIC.pcap.csv,1168,-0.03506989777088165,0.02476641535758972,48,5,14974432.037475783,14974432.0

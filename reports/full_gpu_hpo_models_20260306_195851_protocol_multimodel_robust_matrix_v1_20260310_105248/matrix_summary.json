@@ -1,0 +1,240 @@
+{
+  "generated_at": "2026-03-10T10:53:16.634576",
+  "base_run_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851",
+  "output_run_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248",
+  "stage_mode": "coarse",
+  "protocols": [
+    "wifi"
+  ],
+  "models": [
+    "xgboost"
+  ],
+  "families": [
+    {
+      "family_id": "A",
+      "family_name": "fpr_priority",
+      "family_description": "strict_flip_only_low_weight",
+      "hardneg_weight": 1.5,
+      "maladv_weight": 1.5,
+      "extra_topk_per_epsilon": 0
+    },
+    {
+      "family_id": "B",
+      "family_name": "balanced",
+      "family_description": "strict_flips_limited_near_miss_moderate_weight",
+      "hardneg_weight": 2.0,
+      "maladv_weight": 2.0,
+      "extra_topk_per_epsilon": 500
+    },
+    {
+      "family_id": "C",
+      "family_name": "recall_priority_control",
+      "family_description": "current_hardening_control",
+      "hardneg_weight": 2.5,
+      "maladv_weight": 2.5,
+      "extra_topk_per_epsilon": 2500
+    }
+  ],
+  "attack_profile": {
+    "mode": "fixed_worst_case_query",
+    "fixed_reference_model": "xgboost_from_base_run",
+    "epsilons": [
+      0.1
+    ],
+    "gate_epsilon": 0.1,
+    "query_budget_benign": 4,
+    "query_budget_malicious": 4
+  },
+  "gates": {
+    "clean_fpr_max": 0.005,
+    "attacked_benign_fpr_max": 0.005,
+    "adv_malicious_recall_min": 0.99
+  },
+  "protocol_rows": {
+    "wifi": [
+      {
+        "protocol": "wifi",
+        "model_name": "xgboost",
+        "family_id": "A",
+        "family_name": "fpr_priority",
+        "family_description": "strict_flip_only_low_weight",
+        "seed": 123,
+        "num_gate_pass": 0,
+        "gate_pass": 0,
+        "gate_failure_category": "adv_recall_only",
+        "gate_clean_fpr": 1,
+        "gate_attacked_benign_fpr": 1,
+        "gate_adv_malicious_recall": 0,
+        "clean_fpr": 0.0,
+        "attacked_benign_fpr": 0.0,
+        "adv_malicious_recall": 0.96875,
+        "clean_f1": 0.9958791208791209,
+        "robust_f1": 0.9841269841269841,
+        "warm_threshold": 0.42059135409913034,
+        "selected_threshold": 0.3617848363370658,
+        "warm_model_device": "cpu",
+        "robust_model_device": "cpu",
+        "hardneg_weight": 1.5,
+        "maladv_weight": 1.5,
+        "extra_topk_per_epsilon": 0,
+        "n_aug_benign": 3,
+        "n_aug_malicious": 64,
+        "files": {
+          "candidate_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_A_seed_123",
+          "attack_stats_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_A_seed_123\\attack_stats.csv",
+          "attack_preview_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_A_seed_123\\attack_preview.csv",
+          "saved_model": ""
+        },
+        "final_rank": 1
+      },
+      {
+        "protocol": "wifi",
+        "model_name": "xgboost",
+        "family_id": "B",
+        "family_name": "balanced",
+        "family_description": "strict_flips_limited_near_miss_moderate_weight",
+        "seed": 123,
+        "num_gate_pass": 0,
+        "gate_pass": 0,
+        "gate_failure_category": "adv_recall_only",
+        "gate_clean_fpr": 1,
+        "gate_attacked_benign_fpr": 1,
+        "gate_adv_malicious_recall": 0,
+        "clean_fpr": 0.0,
+        "attacked_benign_fpr": 0.0,
+        "adv_malicious_recall": 0.96875,
+        "clean_f1": 0.9929395557086275,
+        "robust_f1": 0.9841269841269841,
+        "warm_threshold": 0.42059135409913034,
+        "selected_threshold": 0.8975238676350086,
+        "warm_model_device": "cpu",
+        "robust_model_device": "cpu",
+        "hardneg_weight": 2.0,
+        "maladv_weight": 2.0,
+        "extra_topk_per_epsilon": 500,
+        "n_aug_benign": 64,
+        "n_aug_malicious": 64,
+        "files": {
+          "candidate_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_B_seed_123",
+          "attack_stats_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_B_seed_123\\attack_stats.csv",
+          "attack_preview_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_B_seed_123\\attack_preview.csv",
+          "saved_model": ""
+        },
+        "final_rank": 2
+      },
+      {
+        "protocol": "wifi",
+        "model_name": "xgboost",
+        "family_id": "C",
+        "family_name": "recall_priority_control",
+        "family_description": "current_hardening_control",
+        "seed": 123,
+        "num_gate_pass": 0,
+        "gate_pass": 0,
+        "gate_failure_category": "adv_recall_only",
+        "gate_clean_fpr": 1,
+        "gate_attacked_benign_fpr": 1,
+        "gate_adv_malicious_recall": 0,
+        "clean_fpr": 0.0,
+        "attacked_benign_fpr": 0.0,
+        "adv_malicious_recall": 0.96875,
+        "clean_f1": 0.9929395557086275,
+        "robust_f1": 0.9841269841269841,
+        "warm_threshold": 0.42059135409913034,
+        "selected_threshold": 0.8718763600485638,
+        "warm_model_device": "cpu",
+        "robust_model_device": "cpu",
+        "hardneg_weight": 2.5,
+        "maladv_weight": 2.5,
+        "extra_topk_per_epsilon": 2500,
+        "n_aug_benign": 64,
+        "n_aug_malicious": 64,
+        "files": {
+          "candidate_dir": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_C_seed_123",
+          "attack_stats_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_C_seed_123\\attack_stats.csv",
+          "attack_preview_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\candidates\\coarse_wifi_xgboost_C_seed_123\\attack_preview.csv",
+          "saved_model": ""
+        },
+        "final_rank": 3
+      }
+    ]
+  },
+  "global_rows": [
+    {
+      "candidate_key": "xgboost__A__123",
+      "model_name": "xgboost",
+      "family_id": "A",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": 1,
+      "gate_pass": 0,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9958791208791209,
+      "mean_robust_f1": 0.9841269841269841,
+      "final_rank": 1
+    },
+    {
+      "candidate_key": "xgboost__B__123",
+      "model_name": "xgboost",
+      "family_id": "B",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": 1,
+      "gate_pass": 0,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9929395557086275,
+      "mean_robust_f1": 0.9841269841269841,
+      "final_rank": 2
+    },
+    {
+      "candidate_key": "xgboost__C__123",
+      "model_name": "xgboost",
+      "family_id": "C",
+      "seed": 123,
+      "protocols_present": "wifi",
+      "has_all_protocols": 1,
+      "gate_pass": 0,
+      "gate_failure_category": "adv_recall_only",
+      "worst_attacked_benign_fpr": 0.0,
+      "worst_clean_fpr": 0.0,
+      "worst_adv_malicious_recall": 0.96875,
+      "mean_clean_f1": 0.9929395557086275,
+      "mean_robust_f1": 0.9841269841269841,
+      "final_rank": 3
+    }
+  ],
+  "stability_rows": [],
+  "stability_consistency_rows": [],
+  "fallback_events": [],
+  "escalation_recommendation": {
+    "triggered": 1,
+    "reason": "tuning_infeasible",
+    "recommendation": "stop_tuning_loop_move_to_representation_changes",
+    "protocol_hard_cap": {
+      "wifi": 1
+    }
+  },
+  "external_benign_summary": {
+    "enabled": 0,
+    "external_csvs": [],
+    "rows_raw": 0,
+    "rows_kept": 0,
+    "rows_dropped_non_benign_or_protocol": 0,
+    "rows_dropped_overlap": 0
+  },
+  "files": {
+    "decision_table_global_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\decision_table_global.csv",
+    "stability_check_global_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\stability_check_global.csv",
+    "stability_consistency_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\stability_consistency_summary.csv",
+    "escalation_recommendation_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\escalation_recommendation.json",
+    "constraints_summary_csv": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\hardening_constraints_summary.csv",
+    "realism_profile_json": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\hardening_realism_profile.json",
+    "authoritative_notice": "C:\\Users\\Hugo\\Desktop\\Thesis\\Medical-IoMT-\\reports\\full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260310_105248\\AUTHORITATIVE_RESULTS_NOTICE.txt"
+  }
+}

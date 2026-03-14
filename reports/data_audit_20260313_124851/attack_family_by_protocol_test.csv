@@ -1,0 +1,11 @@
+attack_family,protocol,rows
+DDoS,wifi,1066764
+DoS,wifi,416676
+DDoS,mqtt,50332
+Benign,wifi,41737
+Recon,wifi,27676
+Other,bluetooth,25170
+DoS,mqtt,11636
+Benign,bluetooth,6671
+Malformed,mqtt,1747
+Spoofing,wifi,1744

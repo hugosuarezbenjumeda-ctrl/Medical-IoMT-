@@ -129,17 +129,101 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 
 
 ## Right Now
-- Working on: Robustness context backfill after confirming and interpreting completed realistic full run `xgb_robustness_realistic_full_20260308_212054`.
+- Working on: Thesis-style chapter deliverables are now generated as both source markdown and Word document, with script-verified prose, fewer but more decision-relevant tables, and the final `catboost__E` selection presented as the deployable baseline.
 - Branch: main
-- Files in focus: `scripts/evaluate_xgb_robustness.py`, `scripts/evaluate_xgb_robustness.sbatch`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/robustness_query_metrics_global.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/robustness_query_metrics_protocol.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/perturbation_stats.csv`, `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054/query_trace_summary.json`.
-- Blockers: `mqtt` has no benign test rows, so benign-side FPR robustness for `mqtt` is not estimable (`not_available` by design).
-- Next decision pending: run WiFi-focused hardening (adversarial benign hard negatives + threshold recalibration) before additional architecture/model changes.
+- Files in focus: `Thesis/THESIS_EXPERIMENT_CHAPTER.docx`, `Thesis/THESIS_EXPERIMENT_CHAPTER.md`, `Thesis/generate_thesis_experiment_chapter.py`, `context if youre an ai.md`, `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260314_112105/*`.
+- Blockers: No blocker for the chapter deliverable; only optional further prose expansion or university-specific formatting remains.
+- Next decision pending: Accept the generated `.docx` as the working thesis chapter, or continue with a more formal university-template conversion / additional prose expansion.
 
 ## Recent Changes
 - YYYY-MM-DD HH:MM (TZ) - Change:
   - Why:
   - Commands run:
   - Result:
+- 2026-03-14 18:59 (Europe/Berlin) - Generated thesis-style chapter as markdown plus Word document
+  - Why: User asked to turn the long chronology into an actual document, focus more on polished writing than table volume, and verify the narrative against the Python scripts that produced the results.
+  - Commands run: created `Thesis/.venv-docs` and installed `python-docx`; reverse-engineered the merge, baseline, HPO, leakguard, robustness, WiFi hardening, rebalance, and protocol-matrix scripts; created `Thesis/generate_thesis_experiment_chapter.py`; rendered `Thesis/THESIS_EXPERIMENT_CHAPTER.md` and `Thesis/THESIS_EXPERIMENT_CHAPTER.docx`; verified generation with `py_compile`.
+  - Result: The project now has a script-verified thesis chapter in both markdown and `.docx` form, with fewer but more decision-relevant tables and stronger prose around each experiment pivot and its next-step rationale.
+- 2026-03-14 18:19 (Europe/Berlin) - Expanded the chronological thesis document into a fuller chapter with appendices
+  - Why: User asked to continue and make the thesis document substantially longer, with more explicit chronology, more tables, and clearer explanation of why each experimental pivot led to the next.
+  - Commands run: extended `Thesis/generate_chronological_experiment_journey.py` with extra report loads and appendix builders; regenerated `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md`; verified rendering and reviewed the added sections.
+  - Result: The document now includes a dated decision log, extra EDA tables, cross-stage progression tables, robust-matrix campaign anatomy, feasibility/realism constraints, stability-envelope evidence, explicit thesis caveats, and engineering-intervention chronology.
+- 2026-03-14 18:02 (Europe/Berlin) - Generated long-form chronological thesis document from project artifacts
+  - Why: User requested a very long thesis document that follows the actual experiment timeline, explains each step and next step, and embeds result tables in chronological order.
+  - Commands run: inventoried `reports/` directories and `context if youre an ai.md`; extracted EDA, baseline, GPU/HPO, robustness, WiFi hardening, rebalance, data-audit, and final robust-matrix result tables; created `Thesis/generate_chronological_experiment_journey.py`; rendered `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md`.
+  - Result: New thesis-ready markdown narrative now exists at `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md` and covers the full path from data preparation to the final `catboost__E` deployment baseline with embedded tables.
+- 2026-03-14 17:20 (Europe/Berlin) - Local test inference metrics generated for protocol-routed `catboost__E`
+  - Why: User requested prediction-based metrics table on `metadata_test.csv` for the three protocol models with thresholds.
+  - Commands run: loaded `wifi/mqtt/bluetooth` coarse `catboost__E` models from run `..._20260314_112105`, applied protocol-specific thresholds from decision tables, executed routed inference over full `data/merged/metadata_test.csv`, and computed `precision, recall, f1, fpr, roc_auc, pr_auc, tp, tn, fp, fn` locally.
+  - Result: Saved metrics table at `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260314_112105/catboost_E_test_predictions_metrics_with_thresholds.csv`; MQTT `fpr`/`roc_auc` are undefined because test MQTT has no benign negatives.
+- 2026-03-14 17:07 (Europe/Berlin) - Completed analysis of run `..._20260314_112105` (artifact-persistent stability pass)
+  - Why: User confirmed completion of the new robust-matrix run and requested continuation from results.
+  - Commands run: inspected run tree and authoritative outputs (`decision_table_global.csv`, `stability_check_global.csv`, `stability_consistency_summary.csv`, `matrix_summary.json`, `escalation_recommendation.json`); verified saved model paths in decision-table `files.saved_model`.
+  - Result: Run finished with persisted model artifacts; stability consistency shows only `catboost__E` as all-seed gate-pass (`xgboost__A` and `xgboost__C` fail stability due `fpr_only`).
+- 2026-03-14 11:40 (Europe/Berlin) - Clarified robust-training semantics and metric coverage
+  - Why: User asked whether models are still trained on general clean data (and not only attacks) and whether reported metrics include clean-data behavior.
+  - Commands run: reviewed robust-matrix pipeline stages and run-output metric columns from decision/stability tables.
+  - Result: Confirmed pipeline does clean warm-fit plus robust hard-negative augmentation/retrain; reported outputs include both clean metrics (`clean_f1`, `clean_fpr`) and attacked metrics (`attacked_benign_fpr`, `adv_malicious_recall`, `robust_f1`) with known limitation that clean precision/clean recall are not persisted in decision tables.
+- 2026-03-14 11:25 (Europe/Berlin) - Interpreted final stabilized run and compared finalists by protocol
+  - Why: User requested best-model decision between `xgboost__E` and `catboost__C` with protocol-level (non-aggregated) view.
+  - Commands run: parsed `decision_table_global.csv`, `stability_check_global.csv`, `stability_consistency_summary.csv`, `matrix_summary.json`, `escalation_recommendation.json` in `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260314_003108`.
+  - Result: Two all-seed stable pass groups were confirmed (`xgboost__E`, `catboost__C`); recommendation depends on preference (overall rank vs worst-case stability-side FPR margin).
+- 2026-03-14 11:05 (Europe/Berlin) - Enabled robust candidate artifact saving by default
+  - Why: User required saving trained robust models for reuse/deployment and not only reporting metrics.
+  - Commands run: patched `scripts/train_protocol_multimodel_robust_matrix.py` (`--save-models` default true + `--no-save-models` opt-out), updated both robust-matrix sbatch launchers to pass `--save-models`, validated with `py_compile` and `.venv39` unit tests.
+  - Result: New runs now persist robust candidate model artifacts unless explicitly disabled.
+- 2026-03-13 12:58 (Europe/Berlin) - Completed data-first audit for robustness planning
+  - Why: User requested inspecting data thoroughly before making additional script-level robustness/training changes.
+  - Commands run: streamed full-train/full-test audits via `.venv39` on `data/merged/metadata_train.csv` + `metadata_test.csv`; computed protocol/label/family distributions, feature quality, protocol-share drift, top source-file concentration, and attack-stats/query-budget behavior from `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948`.
+  - Result: New artifact bundle written to `reports/data_audit_20260313_124851` with summary tables/JSON; findings confirm severe imbalance/drift, heavy WiFi dominance, MQTT test benign=0, many near-constant features (especially protocol-specific), and robust-matrix query loops saturating budget (high CPU pressure).
+- 2026-03-12 13:28 (Europe/Berlin) - Implemented Targeted V1 recovery changes + launcher/profile updates
+  - Why: User requested direct implementation of the Targeted V1 recovery plan and emphasized avoiding CPU bottlenecks/long local runs.
+  - Commands run: patched `scripts/train_protocol_multimodel_robust_matrix.py` (new CLI: `--attack-source-mode`, `--family-pack`, `--bluetooth-hardneg-max-fraction`; new attack scorer abstraction + stage-mode resolution; no-pass threshold fallback with `adv_shortfall`; bluetooth hardneg cap; recovery family pack with A/B/C/D/E; matrix summary metadata); patched `scripts/evaluate_xgb_robustness.py` (`run_query_sparse_hillclimb` now supports optional `score_margin_fn` callback); patched `scripts/train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch` (now `stage-mode both` + stability seeds + hybrid source + bluetooth recovery settings); added `scripts/test_train_protocol_multimodel_robust_matrix.py`; validated via `.venv39` `py_compile` and test run; attempted bluetooth smoke run and stopped locally per user request.
+  - Result: Targeted V1 feature set is implemented and syntax/test checks pass locally; server-side full run is now the next step.
+- 2026-03-12 00:08 (Europe/Berlin) - Fixed fast-run crash from function-signature mismatch
+  - Why: Server run `ids-proto-mm-fast-c4_255.log` failed with `TypeError: _run_protocol_model_family_candidate() got an unexpected keyword argument 'query_score_batch_benign'`.
+  - Commands run: patched `scripts/train_protocol_multimodel_robust_matrix.py` to add `query_score_batch_benign` and `query_score_batch_mal` to `_run_protocol_model_family_candidate(...)` signature; re-ran `py -3 -m py_compile` for `train_protocol_multimodel_robust_matrix.py` and `evaluate_xgb_robustness.py`.
+  - Result: Call-site and function signature are aligned; script is syntax-valid and ready to restage/resubmit.
+- 2026-03-11 21:55 (Europe/Berlin) - Implemented attack-loop acceleration for robust matrix runtime
+  - Why: User requested concrete fixes for 20h+ runtime and low GPU utilization (CPU-bound query attack loop).
+  - Commands run: patched `scripts/evaluate_xgb_robustness.py` to use `booster.inplace_predict` (fallback to `DMatrix`) and added row-batched query scoring in `run_query_sparse_hillclimb` via new `score_batch_rows` parameter; added CLI `--query-score-batch-rows` and wired callsite; patched `scripts/train_protocol_multimodel_robust_matrix.py` to expose/pass `--query-score-batch-rows` and `--val-malicious-score-batch-rows` through all campaign paths, include query profile details in logs/summary, and use `inplace_predict` in XGBoost model inference helper; updated `scripts/train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch` to reduce iterative step loops and increase per-step candidate batch (`steps 12`, `cands 24`, `score-batch-rows 96`) and lowered threshold grid to `120`; validated syntax with `py -3 -m py_compile`.
+  - Result: Next run will execute the same coarse all-model matrix with substantially fewer attack-loop iterations and larger batched scoring calls, which should materially cut wall-clock and raise GPU work per scoring call.
+- 2026-03-11 10:35 (Europe/Berlin) - Implemented Cycle 3 runtime-cut profile + candidate timing observability
+  - Why: User requested a hard runtime reduction from ~20-40h behavior while keeping all 4 model families and all 3 protocols.
+  - Commands run: patched `scripts/train_protocol_multimodel_robust_matrix.py` to emit per-candidate phase timings (`warm_fit`, `attack_gen`, `robust_fit`, `threshold_eval`, `total`) and completion log line (`candidate_done[...]`); added new launcher `scripts/train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch` with coarse-only locked profile (all 4 models, reduced samples/budgets, `cpus-per-task=32`, thread env exports, `SKIP_PIP_INSTALL=1` default, `EXTRA_ARGS` override); validated with `py -3 -m py_compile`.
+  - Result: New runnable fast path exists without modifying legacy launcher behavior, and logs now surface per-candidate phase duration to diagnose silent stretches.
+- 2026-03-10 13:05 (Europe/Berlin) - Cross-source dataset compatibility audit for robustness extension
+  - Why: User requested checking whether current CICIoMT-trained models can be evaluated/adapted on external dataset `https://github.com/imfaisalmalik/IoT-Healthcare-Security-Dataset`.
+  - Commands run: re-read `context if youre an ai.md`; inspected latest robustness scripts (`train_protocol_multimodel_robust_matrix.py`, `evaluate_xgb_robustness.py`, `xgb_protocol_ids_utils.py`) for required schema; cloned external repo; extracted `Dataset/ICUDatasetProcessed.zip`; inspected CSV schemas (`Attack.csv`, `environmentMonitoring.csv`, `patientMonitoring.csv`); computed required-feature overlap against `reports/full_gpu_hpo_models_20260306_195851/metrics_summary.json`; executed a direct smoke call to `scripts/evaluate_xgb_robustness.py` on external CSV.
+  - Result: External dataset has `0/45` overlap with required model features and lacks `protocol_hint`; current robustness pipeline fails at CSV load with `ValueError: Usecols do not match columns ... ['protocol_hint']`. Current trained models are not directly reusable on this source without a feature/domain adapter.
+- 2026-03-10 11:30 (Europe/Berlin) - Audited Cycle 3 scripts and fixed stability-consistency + reproducibility defects
+  - Why: User requested direct script audit of the Python code being executed on cluster due concern about wasted large-job runtime.
+  - Commands run: inspected `scripts/train_protocol_multimodel_robust_matrix.py` and `scripts/consolidate_protocol_multimodel_robust_report.py`; patched candidate stability grouping from `model+family+seed` to `model+family`; added coarse-only acceptance fallback; made protocol seed offsets deterministic (removed use of randomized Python `hash()`); updated consolidator stable-candidate identifier fallback; validated via `py -3 -m py_compile`.
+  - Result: Future runs can correctly determine cross-seed stability and have deterministic protocol row-capping behavior; consolidated report now handles `candidate_group_key`.
+- 2026-03-10 19:52 (Europe/Berlin) - Applied throughput-focused job config updates (CPU threading + startup cost)
+  - Why: User asked how to speed up long robust matrix training and observed low GPU utilization with only 16 CPUs requested.
+  - Commands run: patched `scripts/train_protocol_multimodel_robust_matrix.sbatch` to request `--cpus-per-task=64`, export thread env vars (`OMP/MKL/OPENBLAS/NUMEXPR`), print CPU thread settings, and skip per-run pip installs by default (`SKIP_PIP_INSTALL=1` unless explicitly overridden); added `EXTRA_ARGS` override support in sbatch for fast-profile runs without editing script; patched `scripts/train_protocol_multimodel_robust_matrix.py` to set thread counts explicitly for XGBoost (`nthread`), CatBoost (`thread_count`), and LightGBM (`n_jobs`) from Slurm CPU allocation; validated with `py -3 -m py_compile`.
+  - Result: Next submissions can use full CPU allocation for CPU-bound/model-threaded phases and avoid repeated dependency install overhead.
+- 2026-03-10 11:08 (Europe/Berlin) - Remote submission flow hardened after failed attempt
+  - Why: First remote submission had shell paste corruption and `tail` on non-existent pending-job log triggered shell exit under `set -e`.
+  - Commands run: canceled job `131`, uploaded updated staged launcher `scripts/train_protocol_multimodel_robust_matrix.sbatch`, resubmitted (`JOB_ID=132`), added safe log-wait loop and GPU/log monitoring commands.
+  - Result: Submission path now avoids fragile heredoc pasting and handles pending-log race safely.
+- 2026-03-10 11:04 (Europe/Berlin) - Runbook rewritten for Cycle 3 protocol multi-model job
+  - Why: User requested complete copy-pasteable Windows PowerShell + server command flow with no placeholder tokens and fail-fast troubleshooting branch.
+  - Commands run: rewrote `CAPSTONE15_REMOTE_JOB_SUBMIT_RUNBOOK.md` with full stage/upload/submit/monitor/fetch/cleanup steps, corrected PowerShell quoting guidance (`ssh rust '...|head...'`), and added corrected resubmit paths for dependency/data/base-run failures.
+  - Result: Root runbook now matches current job topology (`/home/capstone15`, staged scripts, fixed data-path discovery, venv path, authoritative outputs).
+- 2026-03-09 18:43 (Europe/Berlin) - Added dedicated remote submit guide file for future job launches
+  - Why: User requested a standalone top-to-bottom submit guide for staging, submitting, monitoring, fetching outputs, and cleanup for future jobs.
+  - Commands run: created `CAPSTONE15_REMOTE_JOB_SUBMIT_RUNBOOK.md`; patched runbook/context pointers plus recent/timeline/session summary entries in this file.
+  - Result: Project root now includes a single reusable remote-submit playbook and context now explicitly points to it.
+- 2026-03-09 18:43 (Europe/Berlin) - Added new-thread launch prompt template for remote Slurm workflow
+  - Why: User requested a reusable instruction block for future threads to launch jobs from local VS Code terminal using learned constraints.
+  - Commands run: patched `context if youre an ai.md` runbook section to add a copy/paste prompt template with path, staging, monitoring, and failure-handling requirements.
+  - Result: Context now contains a durable `New-thread prompt template` under `Environment / Runbook` for consistent remote submission guidance.
+- 2026-03-09 14:55 (Europe/Berlin) - Added persistent remote-submit runbook (manual vs Codex)
+  - Why: User requested future-thread instructions in context file for sending Python jobs from local VS Code terminal, including which actions are manual versus automatable.
+  - Commands run: inspected `C:/Users/Hugo/.ssh/config`, `C:/Users/Hugo/.ssh/known_hosts`, validated SSH alias resolution (`ssh -G rust`), reviewed `scripts/train_baselines_cpu.sbatch`, and patched runbook/timeline/session sections in this file.
+  - Result: Context now contains a concrete SSH+Slurm workflow using alias `rust`, explicit role split (manual password step vs Codex automation), and command templates for submit/monitor/log checks.
 - 2026-03-09 10:07 (Europe/Berlin) - Backfilled missing context state into this file
   - Why: User requested logging missing information before further work because project continuity appeared incomplete.
   - Commands run: inspected this file sections (`Right Now`, `Recent Changes`, `Conversation Timeline`, `Session Summary`) and patched them with completed-run status, interpretation, and unresolved gaps.
@@ -285,6 +369,24 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 - Decision:
   - Reason:
   - Alternatives considered:
+- Decision: Lock robust-matrix model families to `xgboost` and `catboost` only for current stabilization objective.
+  - Reason: User requested removing `mlp`, and stability passes were achieved with these two boosted families under current gates.
+  - Alternatives considered: Keeping all families (higher search/runtime cost) or single-family restriction (reduced diversity/risk of overfitting to one family behavior).
+- Decision: Use adaptive fraction-based sampling profile (`sampling_policy=adaptive_fraction`) with deterministic seeded selection for coarse and stability stages.
+  - Reason: Fixed-count-only sampling underused available data and contributed to unstable seed behavior.
+  - Alternatives considered: Fixed-count-only legacy policy (kept as backward-compatible option), or full-pool training every stage (higher runtime/CPU pressure).
+- Decision: Keep official hard gates unchanged while hardening threshold search with internal attacked-benign margin.
+  - Reason: Goal is all-seed pass without loosening published acceptance criteria.
+  - Alternatives considered: Relaxing gate thresholds (rejected), or no margin hardening (weaker stability against attacked-benign drift).
+- Decision: Default robust candidate artifact saving to ON.
+  - Reason: Finished runs without saved artifacts block deployment and post-hoc model reuse.
+  - Alternatives considered: Manual per-run `--save-models` opt-in (error-prone) or metrics-only outputs (insufficient for deployment).
+- Decision: Keep attack source mode at `fixed_xgb` for both coarse and stability in this revision.
+  - Reason: Reduces attack-source variance while evaluating sampling/threshold/shortlist mechanics.
+  - Alternatives considered: `candidate_model` or `hybrid` attack source (more variability; deferred).
+- Decision: Keep external benign augmentation disabled in this revision.
+  - Reason: Scope control for stabilization and reproducibility of current acceptance objective.
+  - Alternatives considered: Enable external benign now (adds domain-shift confounders before core stability objective is finalized).
 - Decision: Treat the current modeling-ready tabular base as WiFi+MQTT CSV features; keep Bluetooth as future PCAP-to-feature extraction scope.
   - Reason: No Bluetooth CSV features are present in the current extracted tree.
   - Alternatives considered: Attempt on-the-fly PCAP parsing now (deferred to keep immediate IDS modeling scope focused and reproducible).
@@ -302,9 +404,9 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
   - Alternatives considered: Continue waiting on long pure-python local run (canceled), or build/compile a fully compatible scientific stack before this run (deferred due time).
 
 ## Next Steps
-1. Use EDA findings to define training protocol: macro + per-protocol metrics, class weighting, and threshold policy at constrained FPR.
-2. Build baseline training scripts (LogReg/RF/boosting) on `data/ciciomt2024/merged/metadata_train.csv` with evaluation on `metadata_test.csv`.
-3. Add slice-level evaluation (protocol and attack-family confusion/recall) to verify robustness beyond dominant DDoS/WiFi patterns.
+1. Submit a new robust-matrix `stage-mode both` server run using the patched launchers (model-save enabled, adaptive sampling, threshold margin, query fast-projection) and monitor until stability artifacts are complete.
+2. Compare `xgboost__E` vs `catboost__C` on protocol-level rows plus all stability seeds from the new artifact-complete run, then lock one final deploy candidate.
+3. Patch/export additional persisted clean metrics (precision/recall) in decision outputs if thesis tables require them without recomputation.
 
 ## Open Questions / Risks
 - Should train/test naming mismatch for TCP_IP attacks be normalized to families before reporting per-attack metrics?
@@ -316,15 +418,67 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 - Should the highly correlated top features (`Std`, `Radius`, `Max`, `Magnitue`) be regularized/reduced before adversarial robustness analysis?
 
 ## Environment / Runbook
+- Primary reference for future submissions: `CAPSTONE15_REMOTE_JOB_SUBMIT_RUNBOOK.md`
 - Start:
-  - Login: `ssh <user>@10.205.20.10`
+  - Login (preferred alias): `ssh rust`
+  - Login (explicit jump fallback): `ssh capstone15@10.205.20.10 -J capstone15@ssh.iesci.tech`
+  - Remote project root: `/home/capstone15`
   - Activate env: `source /home/capstone15/.venv/bin/activate`
 - Test:
   - Quick CPU interactive test: `srun --partition=interactive --cpus-per-task=4 --mem=8G --time=00:30:00 --pty bash`
 - Build:
   - Submit batch job: `sbatch <job_script>.sh`
 - Deploy:
+  - Follow live job output: `tail -F /home/capstone15/reports/<log_file>.log`
+  - Check queue/state: `squeue -u capstone15` and `sacct -j <JOB_ID>`
 - Env vars:
+  - `PROJECT_DIR`, `STAGE_DIR`, `BASE_RUN_DIR`, `TRAIN_CSV`, `TEST_CSV`, `OUT_ROOT`, `VENV`, `SKIP_PIP_INSTALL`, `EXTRA_ARGS`
+
+### Future-thread remote job workflow (manual vs Codex)
+- Account identity:
+  - Username: `capstone15`
+  - Password handling: Enter manually at SSH prompt; do not store plaintext passwords in this file/repo.
+- Manual steps (user must do):
+  - Open local VS Code terminal.
+  - Run `ssh rust`.
+  - Enter password when prompted.
+  - Keep the SSH session open while Codex provides remote commands to execute.
+- Codex can do itself once session/path are confirmed:
+  - Write or patch Python scripts and `.sbatch` launchers.
+  - Validate command syntax and resource flags.
+  - Provide exact `sbatch`, `squeue`, `sacct`, `tail`, and `scancel` command sequence for the specific job.
+  - Parse logs/metrics and summarize outcomes.
+- Standard Python job sequence:
+  - `cd /home/capstone15`
+  - `sbatch /home/capstone15/scripts/<job_name>.sbatch`
+  - `squeue -u capstone15`
+  - `sacct -j <JOB_ID> --format=JobID,JobName,Partition,State,Elapsed,ExitCode`
+  - `tail -f /home/capstone15/reports/<log_prefix>_<JOB_ID>.log`
+- Minimal `.sbatch` template:
+  - `#!/bin/bash`
+  - `#SBATCH --job-name=<name>`
+  - `#SBATCH --partition=<cpu|gpu>`
+  - `#SBATCH --cpus-per-task=<N>`
+  - `#SBATCH --mem=<XG>`
+  - `#SBATCH --time=<HH:MM:SS>`
+  - `#SBATCH --output=/home/capstone15/reports/<name>_%j.log`
+  - `#SBATCH --gres=gpu:1` (only for GPU jobs)
+  - `set -euo pipefail`
+  - `source /home/capstone15/.venv/bin/activate`
+  - `python3 /home/capstone15/scripts/<script>.py <args>`
+
+### New-thread prompt template (copy/paste)
+- Use this when starting a fresh Codex chat and you need remote job submission help:
+  - `Read context if youre an ai.md first, then help me launch a Slurm job from local VS Code terminal to server alias rust (user capstone15).`
+  - `Constraints learned:`
+  - `1) Password entry is manual/interactive.`
+  - `2) Server project root is /home/capstone15 (not /home/capstone15/Medical-IoMT-).`
+  - `3) Auto-discover data paths with find for metadata_train.csv and metadata_test.csv before submit.`
+  - `4) Temporary script staging path is /home/capstone15/.jobstage/iomt_<timestamp>/scripts.`
+  - `5) Use VENV=/home/capstone15/.venvs/ids-robust-venv for this workflow.`
+  - `6) Never give placeholder commands like <JOB_ID> or <timestamp>; always fill concrete values.`
+  - `Deliver exact copy-paste commands for: stage -> submit -> monitor (squeue/sacct/tail) -> fetch outputs (scp) -> cleanup stage.`
+  - `If failure occurs, immediately tail the job log, identify root cause, and provide corrected resubmit command.`
 
 ## References
 - Ticket:
@@ -333,6 +487,51 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 - Commits:
 
 ## Conversation Timeline
+- 2026-03-13 12:58 (Europe/Berlin) - Data-first robustness planning audit
+  - User intent: Inspect data deeply first to decide how to use all available data effectively before changing robustness scripts.
+  - Actions taken: Re-read project context and loaded key run artifacts (`decision_table_protocol_*`, `matrix_summary.json`, `hardening_constraints_summary.csv`, `hardening_realism_profile.json`); ran new streaming dataset audit on full merged train/test CSVs and wrote outputs to `reports/data_audit_20260313_124851` (protocol/label balance, feature quality, family distribution, train-test share shift, top source files, feature drift); aggregated candidate attack stats to quantify query saturation and runtime composition.
+  - Outcome: Identified primary data constraints for redesign: strong class/protocol skew, protocol-specific family gaps, no MQTT benign in test, high protocol-conditional feature degeneracy (especially Bluetooth), and query attack loop saturation consistent with CPU-bound runtime pressure.
+  - Next session should start with: Implement agreed script changes in order: (1) sampling policy updates informed by audit outputs, (2) attack-loop efficiency changes, (3) rerun coarse+stability on server with updated profile and compare against baseline metrics.
+- 2026-03-10 13:05 (Europe/Berlin) - External dataset compatibility check for robustness phase
+  - User intent: Determine whether current CICIoMT-trained models and robustness workflow can be evaluated on data from another source (`imfaisalmalik/IoT-Healthcare-Security-Dataset`).
+  - Actions taken: Re-read context and latest robustness scripts to extract schema assumptions; cloned and unpacked external dataset; inspected external CSV headers/labels; compared against required `feature_columns` from base run metrics; executed a direct evaluator smoke invocation using external CSV paths to validate runtime compatibility.
+  - Outcome: Compatibility is currently blocked: external CSVs are packet/MQTT feature schema (52 cols) with no overlap against required 45 CICIoMT flow features, no `protocol_hint`, and evaluator aborts during `usecols` validation.
+  - Next session should start with: Decide adapter strategy (rebuild external data into CICIoMT feature schema + protocol mapping) and then run a controlled cross-source robustness benchmark (at minimum MQTT-routed first pass).
+- 2026-03-09 18:43 (Europe/Berlin) - Added standalone remote submit runbook file in project root
+  - User intent: Save a full step-0-to-finish guide for sending future jobs from local VS Code terminal to server and retrieving outputs.
+  - Actions taken: Created `CAPSTONE15_REMOTE_JOB_SUBMIT_RUNBOOK.md` with annotated commands for staging scripts, building `.sbatch`, submit/monitor flow, fetching outputs, and cleanup; added runbook pointer in this context file.
+  - Outcome: Future sessions now have a single canonical file for operational Slurm submission workflow without rebuilding commands from memory.
+  - Next session should start with: Follow `CAPSTONE15_REMOTE_JOB_SUBMIT_RUNBOOK.md` directly and only adjust script names/arguments.
+- 2026-03-09 18:43 (Europe/Berlin) - Added reusable new-thread prompt for remote job launch
+  - User intent: Save a copy/paste instruction set so future threads can reliably launch jobs from local VS Code terminal to `rust`.
+  - Actions taken: Inserted `New-thread prompt template (copy/paste)` under `Environment / Runbook`, including fixed server-root, manual password step, staged script path, venv path, concrete-command requirement, and fail-fast debug branch.
+  - Outcome: Future sessions can be bootstrapped with one prompt that encodes current operational lessons and avoids prior placeholder/path mistakes.
+  - Next session should start with: Paste the runbook prompt template and execute the generated submit/monitor/fetch sequence with real IDs/paths.
+- 2026-03-09 18:32 (Europe/Berlin) - Reviewed completed full-budget WiFi hardening run report
+  - User intent: Confirm and interpret results from the newly completed run in `reports/`.
+  - Actions taken: Inspected latest run bundle `reports/full_gpu_hpo_models_20260306_195851_wifi_robust_v1_20260309_180250/`; parsed `hardening_summary.json`, `hard_negative_stats.csv`, and `thresholds_by_protocol.json`; compared key deltas against prior hardening run.
+  - Outcome: Full-budget run completed and produced strong hard-negative generation, but selected WiFi threshold dropped sharply (`0.2261 -> 0.0351`) causing large clean and attacked benign FPR increase (~`0.0063 -> 0.0768` and `0.00536 -> 0.07669`) while restoring attacked malicious recall to target (~`0.995`).
+  - Next session should start with: Revisit threshold objective/constraints (or decouple malicious-recall target from WiFi benign-FPR objective) before accepting this hardened model for deployment.
+- 2026-03-09 16:17 (Europe/Berlin) - Threat-model validation of adaptive/novel robustness coverage
+  - User intent: Confirm whether current robustness and hardening setup truly evaluates novel/adaptive adversarial behavior.
+  - Actions taken: Audited realistic attack/hardening code paths and latest query-metrics artifacts (`evaluate_xgb_robustness.py`, `train_wifi_robust_hardening.py`, `robustness_query_metrics_global.csv`, `robustness_query_metrics_protocol.csv`, `summary.json` notes).
+  - Outcome: Confirmed coverage includes query-limited adaptive black-box attacks with realistic constraints plus legacy transfer-style attacks, while noting remaining gaps (static model assumption, no data-poisoning/temporal multi-flow adaptation, MQTT benign-side evaluation gap).
+  - Next session should start with: Expand robustness campaign breadth (multi-seed/budget sweeps and additional black-box optimizers) and add MQTT benign slice before broader hardening decisions.
+- 2026-03-09 16:07 (Europe/Berlin) - WiFi hardening mechanism explanation sync
+  - User intent: Understand the detailed mechanics/tradeoffs of the current WiFi XGBoost hardening approach.
+  - Actions taken: Reviewed `scripts/train_wifi_robust_hardening.py`, `scripts/train_wifi_robust_hardening.sbatch`, threshold-loading utility behavior, and latest hardening output summary fields.
+  - Outcome: Session now has a concrete technical mapping of hardening stages (split, constrained benign hard-negative generation, WiFi retrain, threshold recalibration, artifact semantics) and current caveats.
+  - Next session should start with: Run/inspect a full-budget hardening pass and then rerun realistic robustness evaluation against the new WiFi model+threshold.
+- 2026-03-09 15:58 (Europe/Berlin) - WiFi hardening context/script resync
+  - User intent: Re-open latest context and recently written scripts to get fully up to speed on WiFi XGBoost robustness work.
+  - Actions taken: Re-read this context file and inspected recent script/run artifacts (`scripts/train_wifi_robust_hardening.py`, `scripts/train_wifi_robust_hardening.sbatch`, `scripts/xgb_protocol_ids_utils.py`, latest `hardening_summary.json` outputs, and robustness query metrics files).
+  - Outcome: Session is synchronized; WiFi hardening pipeline is implemented and has produced two local run directories, but latest hardening output is currently small-sample calibration and copied global metrics files remain inherited from base run.
+  - Next session should start with: Execute a full-budget WiFi hardening run and then rerun realistic robustness query evaluation against the hardened WiFi model/thresholds.
+- 2026-03-09 14:55 (Europe/Berlin) - Added persistent SSH+Slurm runbook for future threads
+  - User intent: Document exactly how to submit Python jobs from local terminal and clarify manual actions versus Codex actions.
+  - Actions taken: Verified SSH host aliases and known hosts, validated alias expansion for `rust` with `ProxyJump`, reviewed current Slurm launcher, and added a runbook section with role split + command templates.
+  - Outcome: Future sessions now have a single reference for remote submit flow (`ssh rust` -> `sbatch` -> monitor/logs) with explicit manual credential entry expectations.
+  - Next session should start with: User opens SSH session, then asks Codex to generate or run the specific `.sbatch` workflow for the target script.
 - 2026-03-09 10:07 (Europe/Berlin) - Missing-context backfill + robustness interpretation sync
   - User intent: Log missing project state in this context file before further model work.
   - Actions taken: Reviewed and interpreted completed realistic run outputs from `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054` (`summary.json`, query global/protocol metrics, query trace summary); updated `Right Now`, `Recent Changes`, and `Session Summary`.
@@ -540,9 +739,9 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
   - Next session should start with: Execute a full realistic campaign (balanced pilot or higher budgets) and compare realistic-query degradation against legacy surrogate/SHAP results for thesis interpretation.
 
 ## Session Summary (Most Recent)
-- Date: 2026-03-09 (Europe/Berlin)
-- Summary: Confirmed and interpreted completed realistic robustness outputs at `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054`. Under query-limited malicious evasion, degradation is minimal (global `delta_f1` around `-0.0006` at `epsilon=0.1`), but benign-side perturbations produce substantial FPR drift (global `fpr=0.2329` at `epsilon=0.1`), concentrated in WiFi (`wifi fpr=0.4658` at `epsilon=0.1`).
-- Immediate next action: Implement and run WiFi-focused hardening (adversarial benign augmentation + threshold recalibration), then re-evaluate with the same realistic query budgets.
+- Date: 2026-03-14 (Europe/Berlin)
+- Summary: Produced a new thesis-style chapter generator, `Thesis/generate_thesis_experiment_chapter.py`, that rewrites the prior chronology into a more formal narrative with fewer but more decision-relevant tables. The deliverables are `Thesis/THESIS_EXPERIMENT_CHAPTER.md` and `Thesis/THESIS_EXPERIMENT_CHAPTER.docx`, both rendered from saved artifacts and checked against the actual merge/training/robustness scripts. A dedicated document-generation venv now exists at `Thesis/.venv-docs` with `python-docx`.
+- Immediate next action: Review the generated `.docx` against thesis formatting requirements and decide whether to keep this as the working chapter or run another pass for template-specific formatting and/or further prose expansion.
 
 ## Missing Context Backfill (2026-03-09)
 - Confirmed canonical realistic run directory: `reports/full_gpu_hpo_models_20260306_195851/xgb_robustness_realistic_full_20260308_212054`.
@@ -631,3 +830,108 @@ Before starting any modeling/training task, read `/home/capstone15/reports/EDA_F
 - Local explanation panel uses human-readable feature labels + plain-language rationale text.
 - Alert counters are split into `Alerts Detected` vs `Alerts Surfaced`.
 
+
+- 2026-03-10 10:54 (Europe/Berlin) - Implemented Cycle 3 protocol multi-model robust matrix scripts (new files only)
+  - Why: User requested from-scratch robust retraining matrix across wifi/mqtt/bluetooth with all model families and bounded coarse+stability stages.
+  - Actions taken: Added scripts/train_protocol_multimodel_robust_matrix.py (new orchestrator), scripts/train_protocol_multimodel_robust_matrix.sbatch (new launcher), and scripts/consolidate_protocol_multimodel_robust_report.py (new report consolidator); kept legacy scripts untouched; validated with py_compile and local coarse smoke run (wifi+xgboost tiny settings).
+  - Result: New pipeline emits protocol decision tables, global decision table, stability check table, escalation recommendation, matrix summary, and consolidation report artifacts.
+- 2026-03-10 11:08 (Europe/Berlin) - Cycle 3 remote submit troubleshooting and relaunch flow correction
+  - User intent: Submit the full Cycle 3 run to server and recover from failed launch attempts.
+  - Actions taken: Diagnosed PowerShell quoting and heredoc paste corruption issues; explained why pending jobs may not have logs yet; switched flow to upload a prebuilt sbatch launcher file and safe wait-for-log monitoring pattern; provided exact cancel/resubmit commands around jobs `131` and `132`.
+  - Outcome: Remote workflow became repeatable and less brittle; job submission moved forward with staged launcher usage.
+  - Next session should start with: Verify final job outputs and fetch artifacts to local `reports/server_pull_*`.
+- 2026-03-10 11:30 (Europe/Berlin) - Code audit of submitted Cycle 3 script found stability consistency defect
+  - User intent: "check the python scripts you wrote" to ensure the large cluster job is valid.
+  - Actions taken: Performed line-level audit of `scripts/train_protocol_multimodel_robust_matrix.py` and consolidator; found seed-key mismatch in stability consistency calculation; patched to group by `candidate_group_key=model__family`, added coarse-only acceptance fallback, and replaced nondeterministic `hash(proto)` seed offsets with deterministic offsets; re-ran `py_compile`.
+  - Outcome: Patched local scripts now produce correct stability consistency logic for future submissions; previously submitted runs with old script should not trust stability consistency/escalation files without recomputation.
+  - Next session should start with: Stage patched scripts and resubmit Cycle 3 job (or postprocess finished run to recompute stability consistency).
+- 2026-03-11 10:35 (Europe/Berlin) - Runtime-cut implementation for Cycle 3 all-model coarse pass
+  - User intent: Stop long 20h+ runs and implement concrete changes to reduce wall-clock while keeping all four model families.
+  - Actions taken: Added new launcher `scripts/train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch` with locked coarse-only profile (`wifi,mqtt,bluetooth`; `xgboost,catboost,lightgbm,mlp`; reduced samples/query budgets; `cpus-per-task=32`; thread env exports; `SKIP_PIP_INSTALL=1` default; `EXTRA_ARGS` overrides). Patched `scripts/train_protocol_multimodel_robust_matrix.py` to emit per-candidate phase timings and completion log line (`candidate_done[...]`) covering `warm_fit`, `attack_gen`, `robust_fit`, `threshold_eval`, and total elapsed.
+  - Outcome: New fast execution path is available without replacing legacy launchers, and long silent periods are now diagnosable from candidate-level timing telemetry.
+  - Next session should start with: Submit the fast launcher profile, verify first completed candidate latency, and apply fallback profile only if first 8 candidates miss runtime target.
+- 2026-03-11 21:55 (Europe/Berlin) - Attack-loop throughput patch for coarse all-model run
+  - User intent: Cancel the slow run and force implementation of the runtime/GPU-utilization fixes from the start.
+  - Actions taken: Patched `scripts/evaluate_xgb_robustness.py` query attack core to use batched scoring (`inplace_predict` with safe fallback) and new `score_batch_rows`; wired new CLI knob in evaluator and in `scripts/train_protocol_multimodel_robust_matrix.py` (`--query-score-batch-rows`, `--val-malicious-score-batch-rows`) across benign/malicious train+val campaigns; updated fast launcher to stronger throughput profile (`steps=12`, `cands=24`, `score_batch_rows=96`, `threshold_grid=120`); syntax-validated modified scripts.
+  - Outcome: Code path is now materially less CPU-loop dominated and should produce better GPU work batching with reduced wall-clock for the same coarse matrix structure.
+  - Next session should start with: Upload patched scripts/sbatch to stage, resubmit coarse job, and monitor first candidate completion and `candidate_done[...]` phase timings.
+
+- 2026-03-12 12:57 (Europe/Berlin) - Context + latest robust-matrix results review
+  - User intent: Re-read project context and inspect latest run outputs in `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948` to align next robustness/FPR/F1 work.
+  - Actions taken: Re-read `context if youre an ai.md`; reviewed authoritative artifacts (`decision_table_protocol_*.csv`, `decision_table_global.csv`, `matrix_summary.json`, `escalation_recommendation.json`, `external_benign_data_summary.csv`, stability CSVs, constraints/realism profiles); extracted gate-pass/failure patterns across protocols/models.
+  - Outcome: Global winner is `xgboost__B__42` (only candidate passing all global gates across wifi/mqtt/bluetooth). WiFi and MQTT have many gate-pass candidates, while Bluetooth is the limiting protocol (only `xgboost/B` passes). Stability files are empty in this coarse-only run, and no external benign data was used (`enabled=false`).
+  - Next session should start with: Run stability stage (multi-seed for shortlisted candidates) and enable external benign evaluation to validate low-FPR robustness beyond in-distribution benign traffic.
+- 2026-03-12 13:28 (Europe/Berlin) - Targeted V1 recovery implementation (code complete, local long-run intentionally stopped)
+  - User intent: Implement the full Targeted V1 robustness recovery plan and then avoid long local smoke execution because full training should run on university servers.
+  - Actions taken: Patched `train_protocol_multimodel_robust_matrix.py` for attack-source modes (`fixed_xgb`/`candidate_model`/`hybrid`), no-pass threshold fallback (`adv_shortfall` priority), bluetooth recovery family pack (`A/B/C/D/E`), and deterministic bluetooth hardneg cap; patched `evaluate_xgb_robustness.py` query attack loop to accept scorer callbacks; patched fast launcher to `stage-mode both` plus stability seeds and new profile args; added regression tests in `scripts/test_train_protocol_multimodel_robust_matrix.py`; ran `.venv39` `py_compile` and unit tests successfully.
+  - Outcome: Implementation is complete and validated with compile/tests; local smoke was manually stopped per user instruction to avoid long local runtime.
+  - Next session should start with: Stage these scripts to server and execute the acceptance run profile; evaluate `decision_table_global.csv` for `>=2` gate-pass candidates and confirm stability consistency outputs.
+- 2026-03-13 13:45 (Europe/Berlin) - Robust matrix stabilization implementation (XGBoost+CatBoost only)
+  - User intent: Implement all-seed stabilization plan without relaxing official gates, with adaptive sampling and threshold hardening.
+  - Actions taken: Patched `scripts/train_protocol_multimodel_robust_matrix.py` to enforce allowed models (`xgboost`,`catboost`) in stage resolution, add diversity-preserving stability shortlist construction, finish adaptive sampling wiring (`sampling_policy` + bucket min/max/fraction use), add threshold internal attacked-benign margin selection path metadata, and include margin in matrix summary gates; updated hparam lookups to model-key only; updated launchers `scripts/train_protocol_multimodel_robust_matrix.sbatch` and `scripts/train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch` to fixed_xgb + adaptive balanced coarse/stability profiles + margin `0.8` + no MLP model args; expanded `scripts/test_train_protocol_multimodel_robust_matrix.py` with adaptive sampler, threshold margin fallback/path, model restriction, and shortlist diversity tests.
+  - Validation: `py -3 -m py_compile` passed for script+tests; unit tests passed via `.venv39\\Scripts\\python.exe scripts\\test_train_protocol_multimodel_robust_matrix.py` (20 tests, OK).
+  - Outcome: Plan is implemented in code and launch profiles; matrix flow now hard-restricts training shortlist/run candidates to XGBoost+CatBoost with adaptive deterministic sampling and threshold hardening.
+- 2026-03-13 14:05 (Europe/Berlin) - Added one-command remote submit script for robust matrix jobs
+  - User intent: Prepare a practical script to send the updated robust-matrix run as a server job.
+  - Actions taken: Added `scripts/submit_protocol_multimodel_robust_matrix_job.ps1` with profile switch (`default`/`fast`) that creates a remote stage under `/home/capstone15/.jobstage`, uploads required scripts/sbatch, auto-discovers remote train/test CSVs, submits via `sbatch --parsable` with exported env vars (`PROJECT_DIR`, `STAGE_DIR`, `BASE_RUN_DIR`, `TRAIN_CSV`, `TEST_CSV`, `OUT_ROOT`, `VENV`, `SKIP_PIP_INSTALL`, `EXTRA_ARGS`), and writes local submit metadata under `reports/remote_submit_meta/`.
+  - Validation: PowerShell AST parse check returned OK; remote execution was not run locally in this session.
+  - Outcome: User now has a single executable Windows submit script for server job dispatch using the updated XGBoost+CatBoost launchers.
+- 2026-03-13 14:35 (Europe/Berlin) - CPU bottleneck reduction pass for query attack loops (GPU-utilization oriented)
+  - User intent: Aggressively reduce CPU bottleneck in robustness training attack loops because GPU utilization remained low.
+  - Actions taken: Patched `scripts/evaluate_xgb_robustness.py` hillclimb core with fast batched projection (`project_realistic_candidates_fast`) plus top-k full-refine/rescore path (`fast_projection`, `refine_topk`) under strict query-budget accounting; added CLI knobs `--query-fast-projection/--no-query-fast-projection` and `--query-refine-topk`; exposed new summary telemetry (`fast_projection_rows`, `full_projection_rows`, `fast_refine_candidates_scored`, `full_projection_candidates`). Wired same controls through `scripts/train_protocol_multimodel_robust_matrix.py` stage profiles and campaign stats (`query_fast_projection`, `query_refine_topk`, stage overrides for refine-topk). Updated robust matrix sbatch profiles to higher batch/active-row settings and refine-topk (`fast` profile now uses score-batch 4096 and active-row cap 16384).
+  - Validation: `py -3 -m py_compile` passed; `.venv39` tests passed for both `scripts/test_evaluate_xgb_robustness.py` and `scripts/test_train_protocol_multimodel_robust_matrix.py`.
+  - Outcome: Query attack generation now performs far fewer expensive full-projection operations per row and is configured for larger GPU scoring batches.
+- 2026-03-14 11:05 (Europe/Berlin) - Enforced robust-matrix model artifact persistence by default
+  - User intent: Ensure trained robust candidate models are actually saved; avoid runs that only emit metrics.
+  - Actions taken: Updated `scripts/train_protocol_multimodel_robust_matrix.py` CLI so model saving is default-on (`--save-models` now `default=True`) and added explicit opt-out flag `--no-save-models`; updated both launchers (`train_protocol_multimodel_robust_matrix.sbatch`, `train_protocol_multimodel_robust_matrix_fast_coarse_all4.sbatch`) to pass `--save-models` explicitly.
+  - Validation: `py -3 -m py_compile scripts/train_protocol_multimodel_robust_matrix.py` passed; `.venv39` `scripts/test_train_protocol_multimodel_robust_matrix.py` passed (20 tests).
+  - Outcome: New runs will persist robust candidate model artifacts unless explicitly disabled.
+- 2026-03-14 11:25 (Europe/Berlin) - Full run-result interpretation + protocol-level finalist comparison captured
+  - User intent: Confirm final outcome of run `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260314_003108`, pick between `xgboost__E` and `catboost__C`, inspect per-protocol metrics, and clarify model artifact availability.
+  - Actions taken:
+    - Reviewed authoritative outputs: `decision_table_global.csv`, `stability_check_global.csv`, `stability_consistency_summary.csv`, `matrix_summary.json`, `escalation_recommendation.json`.
+    - Confirmed objective status: coarse/global had 10/10 gate-pass candidates; stability consistency had two all-seed-pass groups (`xgboost__E`, `catboost__C`) and one fail (`xgboost__C` with `fpr_only`).
+    - Confirmed escalation state: `stable_candidate_ready` with no hard-cap trigger.
+    - Produced explicit per-protocol, non-aggregated metric comparison for finalists:
+      - `xgboost__E`: wifi/mqtt/bluetooth gate-pass rows all true.
+      - `catboost__C`: wifi/mqtt/bluetooth gate-pass rows all true.
+      - Compared columns used in decision tables: `clean_f1`, `clean_fpr`, `attacked_benign_fpr`, `adv_malicious_recall`, `robust_f1`.
+    - Clarified metric persistence limitation: clean precision/clean recall are not persisted in decision tables for this run.
+    - Clarified artifact availability:
+      - Base-run models exist under `reports/full_gpu_hpo_models_20260306_195851/models`.
+      - Robust candidate model files in run `..._20260314_003108` were not saved (`saved_model` empty), so exact robust `xgboost__E` weights are not recoverable from that completed run.
+  - Outcome:
+    - Decision recommendation was made contextually:
+      - If prioritizing global rank/performance table: `xgboost__E`.
+      - If prioritizing worst-case stability-side FPR margin: `catboost__C`.
+    - User was informed that new runs after the `--save-models` default patch will persist robust candidate artifacts.
+- 2026-03-14 11:40 (Europe/Berlin) - Robust-training semantics and metric-scope clarification
+  - User intent: Confirm whether current training is still "general clean training plus robustness" and whether outputs reflect clean-data metrics too.
+  - Actions taken: Mapped the robust-matrix stage order (clean warm-fit -> attack/hard-negative generation -> robust refit -> threshold selection) and verified metric columns persisted in protocol/global decision tables.
+  - Outcome: Confirmed models are first trained on clean sampled data and then hardened with attack-generated examples; exported decision metrics cover both clean and attacked behavior (`clean_f1`, `clean_fpr`, `attacked_benign_fpr`, `adv_malicious_recall`, `robust_f1`). Noted that clean precision/clean recall are not currently persisted in those decision tables.
+  - Next session should start with: Add clean precision/recall persistence to decision outputs if required for reporting, and rerun with artifact-saving enabled for final model export.
+- 2026-03-14 17:07 (Europe/Berlin) - New artifact-persistent run reviewed (`..._20260314_112105`)
+  - User intent: Continue once the new server run finished and determine practical model outcome.
+  - Actions taken: Reviewed authoritative outputs (`decision_table_global.csv`, `stability_check_global.csv`, `stability_consistency_summary.csv`, `matrix_summary.json`, `escalation_recommendation.json`), verified saved model artifacts now exist under candidate/stability directories, and compared coarse vs stability behavior.
+  - Outcome: Escalation remains `stable_candidate_ready`; only `catboost__E` is consistent gate-pass across all stability seeds. `xgboost__A` and `xgboost__C` pass coarse global ranking but fail stability due FPR (`fpr_only`), so they are not stable deployment picks under current gates.
+  - Next session should start with: Package/promote `catboost__E` artifacts for deployment baseline, or run an explicit xgboost-only recovery pass if xgboost must be retained.
+- 2026-03-14 17:20 (Europe/Berlin) - Full local test predictions + requested metric table for `catboost__E`
+  - User intent: Run predictions on test data with the three protocol models and return `precision, recall, f1, fpr, roc_auc, pr_auc, tp, tn, fp, fn` plus threshold.
+  - Actions taken: Loaded `coarse_*_catboost_E_seed_42` models for wifi/mqtt/bluetooth, applied protocol-specific thresholds from `decision_table_protocol_*.csv`, performed protocol-routed inference over `data/merged/metadata_test.csv`, and computed requested metrics locally (including global routed aggregate).
+  - Outcome: Output table saved to `reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260314_112105/catboost_E_test_predictions_metrics_with_thresholds.csv`; MQTT `fpr` and `roc_auc` are undefined due zero benign negatives in MQTT test split.
+  - Next session should start with: Use this table for reporting and, if needed, add a small exporter for markdown/LaTeX-ready thesis tables.
+- 2026-03-14 18:02 (Europe/Berlin) - Generated chronological thesis journey document with embedded report tables
+  - User intent: Produce a very long thesis-style document that follows the real experiment timeline, explains the reasoning behind each next step, and includes result tables from the chronologically ordered `reports/` folders.
+  - Actions taken: Re-read `context if youre an ai.md`; inventoried the authoritative report directories and extracted metrics, decision, stability, hardening, robustness, and audit tables; created `Thesis/generate_chronological_experiment_journey.py`; rendered `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md`.
+  - Outcome: New document `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md` now narrates the full path from data preparation and EDA through leakguard, realistic robustness, WiFi hardening, robust-matrix stabilization, and final `catboost__E` deployment selection, with embedded tables drawn from the saved artifacts.
+  - Next session should start with: Review the markdown against thesis chapter needs and, if necessary, convert the selected tables and narrative into the final LaTeX/Word layout.
+- 2026-03-14 18:19 (Europe/Berlin) - Expanded chronological thesis chapter with appendix-level evidence
+  - User intent: Continue the thesis-document task and make the chapter significantly longer with more chronology, more tables, and clearer explanation of each pivot.
+  - Actions taken: Extended `Thesis/generate_chronological_experiment_journey.py` to load additional EDA, robustness-summary, matrix-summary, stability-check, data-cap, realism-profile, and external-benign artifacts; added generated sections for a dated decision log, extra EDA context, cross-stage metric progressions, robust-matrix campaign evolution, family/gate definitions, realism and feasibility constraints, stability envelope, thesis caveats, and engineering interventions; rerendered and reviewed `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md`.
+  - Outcome: `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md` is now an expanded 788-line thesis chapter with materially stronger evidence for the final `catboost__E` deployment decision.
+  - Next session should start with: Convert the expanded markdown into the final thesis formatting target or further formalize the prose if the university chapter style requires it.
+- 2026-03-14 18:59 (Europe/Berlin) - Produced a thesis-style chapter with a Word deliverable and script-verified prose
+  - User intent: Turn the chronology into an actual document, reduce unnecessary tables, focus more on polished writing, and verify the narrative against the Python scripts used in the project.
+  - Actions taken: Re-read `Thesis/CHRONOLOGICAL_EXPERIMENT_JOURNEY.md` and the project context; reverse-engineered the core methodology scripts covering merge, baselines, full GPU, HPO, leakguard, explainability, robustness, WiFi hardening, WiFi rebalance, and the protocol-wide robust matrix; created a document-generation venv at `Thesis/.venv-docs`; wrote `Thesis/generate_thesis_experiment_chapter.py`; rendered `Thesis/THESIS_EXPERIMENT_CHAPTER.md` and `Thesis/THESIS_EXPERIMENT_CHAPTER.docx`; validated generation with `py_compile`.
+  - Outcome: The project now includes a Word-based thesis chapter and a corresponding markdown source with fewer but more decision-relevant tables, stronger narrative transitions between stages, and direct script-level verification of the described methodology.
+  - Next session should start with: Review the `.docx` against the university chapter template and decide whether to keep it as the working chapter or perform another pass for stricter academic style and template-specific formatting.

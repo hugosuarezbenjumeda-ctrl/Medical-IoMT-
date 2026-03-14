@@ -1,0 +1,13 @@
+seed,candidate_key,candidate_group_key,model_name,family_id,global_gate_pass,worst_attacked_benign_fpr,worst_clean_fpr,worst_adv_malicious_recall
+43,mlp__C__43,mlp__C,mlp,C,False,0.19533333333333333,0.11228470581990924,0.99
+43,mlp__B__43,mlp__B,mlp,B,False,0.19733333333333333,0.14636263937123012,0.99
+43,mlp__D__43,mlp__D,mlp,D,False,0.886,0.8944434289892159,0.99
+43,mlp__E__43,mlp__E,mlp,E,False,0.914,0.9207183330286968,0.9906666666666667
+43,catboost__E__43,catboost__E,catboost,E,False,0.95,0.9476329738621824,0.9906666666666667
+43,xgboost__B__43,xgboost__B,xgboost,B,False,0.978,0.97961981356242,0.9933333333333333
+44,catboost__E__44,catboost__E,catboost,E,False,0.024,0.024675562054469018,0.99
+44,mlp__C__44,mlp__C,mlp,C,False,0.18,0.11379740452748069,0.99
+44,mlp__E__44,mlp__E,mlp,E,False,0.214,0.21687077316761105,0.99
+44,mlp__B__44,mlp__B,mlp,B,False,0.83,0.8401114969840979,0.99
+44,mlp__D__44,mlp__D,mlp,D,False,0.9246666666666666,0.9320965088649241,0.99
+44,xgboost__B__44,xgboost__B,xgboost,B,False,0.978,0.97961981356242,0.9933333333333333

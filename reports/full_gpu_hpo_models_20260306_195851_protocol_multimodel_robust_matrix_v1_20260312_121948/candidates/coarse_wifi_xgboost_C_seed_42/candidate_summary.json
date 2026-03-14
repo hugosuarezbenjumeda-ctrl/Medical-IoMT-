@@ -1,0 +1,41 @@
+{
+  "protocol": "wifi",
+  "model_name": "xgboost",
+  "family_id": "C",
+  "family_name": "recall_priority_control",
+  "family_description": "current_hardening_control",
+  "seed": 42,
+  "num_gate_pass": 86,
+  "gate_pass": 1,
+  "gate_failure_category": "none",
+  "gate_clean_fpr": 1,
+  "gate_attacked_benign_fpr": 1,
+  "gate_adv_malicious_recall": 1,
+  "clean_fpr": 0.0,
+  "attacked_benign_fpr": 0.0,
+  "adv_malicious_recall": 0.9946666666666667,
+  "clean_f1": 0.9958337357931678,
+  "robust_f1": 0.9973262032085561,
+  "warm_threshold": 0.30101734166851735,
+  "selected_threshold": 0.7311008015174043,
+  "warm_model_device": "cuda",
+  "robust_model_device": "cuda",
+  "hardneg_weight": 2.5,
+  "maladv_weight": 2.5,
+  "extra_topk_per_epsilon": 2500,
+  "n_aug_benign": 3617,
+  "n_aug_malicious": 4000,
+  "timing_seconds": {
+    "total": 30.34194302558899,
+    "warm_fit": 1.934107780456543,
+    "attack_gen": 26.241518020629883,
+    "robust_fit": 2.007342576980591,
+    "threshold_eval": 0.1201639175415039
+  },
+  "files": {
+    "candidate_dir": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_xgboost_C_seed_42",
+    "attack_stats_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_xgboost_C_seed_42/attack_stats.csv",
+    "attack_preview_csv": "/home/capstone15/reports/full_gpu_hpo_models_20260306_195851_protocol_multimodel_robust_matrix_v1_20260312_121948/candidates/coarse_wifi_xgboost_C_seed_42/attack_preview.csv",
+    "saved_model": ""
+  }
+}
